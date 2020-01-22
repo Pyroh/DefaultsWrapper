@@ -27,25 +27,37 @@
 
 import Foundation
 
-@propertyWrapper
-public struct Default<Element> {
+
+@propertyWrapper public struct Default<Element> {
     
     public typealias DefaultValueProvider = () -> Element
     
-    private let getter: () -> Element
-    private let setter: (Element) -> ()
+    private typealias GetterBlock = () -> Element
+    private typealias SetterBlock = (Element) -> ()
+    
+    private let getter: GetterBlock
+    private let setter: SetterBlock
     
     public var wrappedValue: Element {
         get { self.getter() }
         nonmutating set { self.setter(newValue) }
     }
     
-    public init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard) {
+    private init(getter: @escaping GetterBlock, setter: @escaping SetterBlock) {
+        self.getter = getter
+        self.setter = setter
+    }
+}
+
+public extension Default where Element: PropertyListSerializable {
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        self.getter = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
-        self.setter = { defaults.set($0, forKey: defaultName) }
+        let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName) }
+        
+        self = Self(getter: getter, setter: setter)
         
         defaults.register(initialValue, forKey: defaultName)
     }
@@ -56,26 +68,30 @@ public extension Default where Element: UserDefaultsSerializable {
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        self.getter = { Element.deserialize(from: defaults, withKey: defaultName) ?? initialValue }
-        self.setter = { $0.serialize(in: defaults, withKey: defaultName) }
+        let getter: GetterBlock = { Element.deserialize(from: defaults, withKey: defaultName) ?? initialValue }
+        let setter: SetterBlock = { $0.serialize(in: defaults, withKey: defaultName) }
+        
+        self = Self(getter: getter, setter: setter)
         
         initialValue.register(in: defaults, withKey: defaultName)
     }
 }
 
-public extension Default where Element: OptionalType {
+public extension Default where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        self.getter = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
-        self.setter = {
+        let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
+        let setter: SetterBlock = {
             $0.wrapped.map { defaults.set($0, forKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
                 initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
             }
         }
+        
+        self = Self(getter: getter, setter: setter)
         
         initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
     }
@@ -86,8 +102,8 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        self.getter = { (Element.Wrapped.deserialize(from: defaults, withKey: defaultName)).map(Element.wrap) ?? initialValue }
-        self.setter = {
+        let getter: GetterBlock = { (Element.Wrapped.deserialize(from: defaults, withKey: defaultName)).map(Element.wrap) ?? initialValue }
+        let setter: SetterBlock = {
             $0.wrapped.map { $0.serialize(in: defaults, withKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
@@ -95,6 +111,6 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
             }
         }
         
-        initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) }
+        self = Self(getter: getter, setter: setter)
     }
 }
