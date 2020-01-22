@@ -24,15 +24,45 @@
 //  SOFTWARE.
 //
 
+
+/// A `UserDefaults` key.
+///
+/// Since `DefaultName` conforms to `ExpressibleByStringLiteral` a string literal can be used where a `DefaultName` is expected.
+///
+/// It means that if there's such a function :
+/// ```Swift
+/// func ImInNeedOfA(defaultName key: DefaultName) {
+///     print(key)
+/// }
+/// ```
+/// this code :
+/// ```
+/// let somePropertyKey: DefaultName = "somePropertyKey"
+/// ImInNeedOfA(defaultName: somePropertyKey)
+/// ```
+/// and this code :
+/// ```
+/// ImInNeedOfA(defaultName: "somePropertyKey")
+/// ```
+/// will produce the same result.
 public struct DefaultName: ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
+    
+    /// The actual key
     let name: String
+    
     
     public init(stringLiteral value: Self.StringLiteralType) {
         self = Self(name: value)
     }
     
-    private init(name: String) {
+    /// Creates an instance based on the given name.
+    /// - Parameter name: The key.
+    public init(name: String) {
         self.name = name
     }
+}
+
+extension DefaultName: CustomStringConvertible {
+    public var description: String { self.name }
 }

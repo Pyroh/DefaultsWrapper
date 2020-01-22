@@ -26,6 +26,9 @@
 
 import Foundation
 
+/// Used to mark a type that conforms to it as serializable in a property list.
+/// - Remark:
+/// You shouldn't conform your own types or any other type to this protocol.
 public protocol PropertyListSerializable { }
 
 extension Int: PropertyListSerializable { }

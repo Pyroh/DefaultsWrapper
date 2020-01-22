@@ -57,19 +57,36 @@ public extension UserDefaults {
         self.data(forKey: defaultName).flatMap { try? JSONDecoder().decode(T.self, from: $0) }
     }
     
+    /// Adds the given value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The value's key in the registration domain.
     func register(_ value: Any, forKey defaultName: String) {
         self.register(defaults: [defaultName: value])
     }
     
+    /// Adds the given `RawRepresentable` object to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The object to register.
+    ///   - defaultName: The object's key in the registration domain.
     func register<T: RawRepresentable>(_ value: T, forKey defaultName: String) where T.RawValue: PropertyListSerializable {
         self.register(value.rawValue, forKey: defaultName)
     }
     
+    /// Adds the given `UserDefaultsCodable` object to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The object to register.
+    ///   - defaultName: The object's key in the registration domain.
     func register<T: UserDefaultsCodable>(_ value: T, forKey defaultName: String) {
         self.register(Self.data(from: value), forKey: defaultName)
     }
     
-    /// Encode any `Encodable` object to JSON and return the corresponding JSON utf8 string as a byte buffer
+    /// Encodes any `Encodable` object to JSON and returns the corresponding JSON utf8 string as a byte buffer.
+    ///
+    /// - Attention:
+    /// This method will stop execution if the `value` encoding fails.
+    /// `Encodable` type failing to encode is a serious issue and must be handled at design time.
+    ///
     /// - Parameter value: The byte buffer representing the JSON-encoded object
     private static func data<T: Encodable>(from value: T) -> Data {
         let encoder = JSONEncoder()

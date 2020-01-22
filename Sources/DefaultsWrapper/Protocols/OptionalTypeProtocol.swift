@@ -24,12 +24,19 @@
 //  SOFTWARE.
 //
 
-
+/// An `Optional` abstraction that can be conveniently used as a generic constraint.
+/// - Warning:
+/// No other thing than `Optional` should conform to this protocol.
 public protocol OptionalType {
     associatedtype Wrapped
     
+    /// The concrete optional type of the instance.
     var wrapped: Wrapped? { get }
+    
+    /// `nil` when you can't use `nil`.
     static var `nil`: Self { get }
+    
+    /// Produces an optional out of the given object.
     static func wrap(_ wrapping: Wrapped) -> Self
 }
 
