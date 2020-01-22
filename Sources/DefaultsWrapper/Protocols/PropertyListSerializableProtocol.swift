@@ -38,7 +38,16 @@ extension Bool: PropertyListSerializable { }
 
 extension String: PropertyListSerializable { }
 extension Data: PropertyListSerializable { }
+extension Date: PropertyListSerializable { }
 extension URL: PropertyListSerializable { }
 
 extension Dictionary: PropertyListSerializable where Key == String, Value: PropertyListSerializable { }
 extension Array: PropertyListSerializable where Element: PropertyListSerializable { }
+
+extension NSNumber: PropertyListSerializable { }
+extension NSString: PropertyListSerializable { }
+extension NSData: PropertyListSerializable { }
+extension NSDate: PropertyListSerializable { }
+
+extension NSArray: PropertyListSerializable { }
+extension NSDictionary: PropertyListSerializable { }
