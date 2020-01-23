@@ -51,7 +51,6 @@ public struct DefaultName: ExpressibleByStringLiteral {
     /// The actual key
     let name: String
     
-    
     public init(stringLiteral value: Self.StringLiteralType) {
         self = Self(name: value)
     }

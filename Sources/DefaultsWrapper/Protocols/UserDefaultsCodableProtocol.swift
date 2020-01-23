@@ -30,7 +30,9 @@ import Foundation
 
 /// A type that conforms both to `Codable` and `UserDefaultsSerializable`.
 ///
-/// A default implementation is provided for all `UserDefaultsSerializable` methods. Make your `Codable` types conform to `UserDefaultsCodable` instead, you get user's defaults serialization for free 🎁.
+/// A default implementation is provided for all `UserDefaultsSerializable` methods.
+///
+/// Make your `Codable` types conform to `UserDefaultsCodable` today and you'll get user's defaults serialization for free 🎁.
 public protocol UserDefaultsCodable: Codable, UserDefaultsSerializable { }
 
 public extension UserDefaultsCodable {

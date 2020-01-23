@@ -27,23 +27,25 @@
 
 import Foundation
 
+/// A type that can serialize and deserialize itself in the user's defaults database.
 public protocol UserDefaultsSerializable {
+    
+    /// Serializes `self` in the given `UserDefaults` instance.
+    /// - Parameters:
+    ///   - defaults: The database in which to store the serialized `self`.
+    ///   - defaultName: The key associated with the stored serialized `self`.
     func serialize(in defaults: UserDefaults, withKey defaultName: String)
+    
+    
+    /// Serializes and adds`self` to the registration domain using the given key.
+    /// - Parameters:
+    ///   - defaults: The database in which to register the serialized `self`.
+    ///   - defaultName: The key associated with the registered serialized `self`.
     func register(in defaults: UserDefaults, withKey defaultName: String)
     
+    /// Deserializes and returns any instance of `Self` associated with the given key from the given `UserDefaults` instance. Returns `nil` otherwize
+    /// - Parameters:
+    ///   - defaults: The database in which to try to deserialize an instance of `Self`.
+    ///   - defaultName: The key associated with the stored serialized `self`.
     static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Self?
-}
-
-public extension UserDefaultsSerializable where Self: RawRepresentable, Self.RawValue: PropertyListSerializable {
-    func serialize(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.set(self, forKey: defaultName)
-    }
-    
-    func register(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.register(self.rawValue, forKey: defaultName)
-    }
-    
-    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Self? {
-        defaults.rawReprensentable(forKey: defaultName)
-    }
 }

@@ -26,7 +26,9 @@
 
 /// An `Optional` abstraction that can be conveniently used as a generic constraint.
 /// - Warning:
-/// No other thing than `Optional` should conform to this protocol.
+///     No other thing than `Optional` should conform to this protocol.
+/// - Note:
+///     This `Optional` wrapper is a knockoff of [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults)\'s own `OptionalType`.
 public protocol OptionalType {
     associatedtype Wrapped
     
@@ -36,7 +38,7 @@ public protocol OptionalType {
     /// `nil` when you can't use `nil`.
     static var `nil`: Self { get }
     
-    /// Produces an optional out of the given object.
+    /// Wraps the given instance in a corresponding optional.
     static func wrap(_ wrapping: Wrapped) -> Self
 }
 

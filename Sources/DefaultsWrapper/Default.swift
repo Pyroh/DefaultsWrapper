@@ -28,6 +28,7 @@
 import Foundation
 
 
+/// A type linked to an user's defaults entry associated with a key, that can provide a default value and automatically register it.
 @propertyWrapper public struct Default<Element> {
     
     public typealias DefaultValueProvider = () -> Element
@@ -49,8 +50,18 @@ import Foundation
     }
 }
 
+// MARK: - Non-Optional
+// MARK: PropertyListSerializable
 public extension Default where Element: PropertyListSerializable {
-    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard) {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
@@ -59,12 +70,46 @@ public extension Default where Element: PropertyListSerializable {
         
         self = Self(getter: getter, setter: setter)
         
-        defaults.register(initialValue, forKey: defaultName)
+        if registerValue { defaults.register(initialValue, forKey: defaultName) }
     }
 }
 
+// MARK: RawRepresentable
+
+public extension Default where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        let defaultName = key.name
+        let initialValue = defaultValue()
+        
+        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName) ?? initialValue }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName) }
+        
+        self = Self(getter: getter, setter: setter)
+        
+        if registerValue { defaults.register(initialValue, forKey: defaultName) }
+    }
+}
+
+// MARK: UserDefaultsSerializable
+
 public extension Default where Element: UserDefaultsSerializable {
-    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard) {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsSerializable`.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
@@ -73,12 +118,26 @@ public extension Default where Element: UserDefaultsSerializable {
         
         self = Self(getter: getter, setter: setter)
         
-        initialValue.register(in: defaults, withKey: defaultName)
+        if registerValue { initialValue.register(in: defaults, withKey: defaultName) }
     }
 }
 
+// MARK: - Optional
+// MARK: PropertyListSerializable
+
 public extension Default where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
-    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard) {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
+    ///
+    /// - Note:
+    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
@@ -87,18 +146,62 @@ public extension Default where Element: OptionalType, Element.Wrapped: PropertyL
             $0.wrapped.map { defaults.set($0, forKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
+                if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
         
-        initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
+        if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
+    }
+}
+// MARK: RawRepresentable
+
+public extension Default where Element: OptionalType, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    ///
+    /// - Note:
+    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        let defaultName = key.name
+        let initialValue = defaultValue()
+        
+        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? initialValue }
+        let setter: SetterBlock = {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
+                defaults.removeObject(forKey: defaultName)
+                if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
+            }
+        }
+        
+        self = Self(getter: getter, setter: setter)
+        
+        if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
     }
 }
 
+// MARK: UserDefaultsSerializable
 public extension Default where Element: OptionalType, Element.Wrapped: UserDefaultsSerializable {
-    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard) {
+    
+    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsSerializable`.
+    ///
+    /// - Note:
+    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    ///
+    /// - Parameters:
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaultValue: An expression of the wrapped type.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
+    init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.name
         let initialValue = defaultValue()
         
@@ -107,10 +210,12 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
             $0.wrapped.map { $0.serialize(in: defaults, withKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) }
+                if registerValue { initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
+        
+        if registerValue { initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) } }
     }
 }

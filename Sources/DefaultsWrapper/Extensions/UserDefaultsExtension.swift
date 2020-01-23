@@ -84,8 +84,9 @@ public extension UserDefaults {
     /// Encodes any `Encodable` object to JSON and returns the corresponding JSON utf8 string as a byte buffer.
     ///
     /// - Attention:
-    /// This method will stop execution if the `value` encoding fails.
-    /// `Encodable` type failing to encode is a serious issue and must be handled at design time.
+    ///     This method will stop execution if the `value` encoding fails.
+    ///     `Encodable` type failing to encode is a serious issue and must be handled at coding time.
+    ///
     ///
     /// - Parameter value: The byte buffer representing the JSON-encoded object
     private static func data<T: Encodable>(from value: T) -> Data {
