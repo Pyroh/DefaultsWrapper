@@ -98,9 +98,9 @@ public extension Default where Element: RawRepresentable, Element.RawValue: Prop
     }
 }
 
-// MARK: UserDefaultsSerializable
+// MARK: UserDefaultsConvertible
 
-public extension Default where Element: UserDefaultsSerializable {
+public extension Default where Element: UserDefaultsConvertible {
     
     /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsSerializable`.
     ///
@@ -113,12 +113,13 @@ public extension Default where Element: UserDefaultsSerializable {
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        let getter: GetterBlock = { Element.deserialize(from: defaults, withKey: defaultName) ?? initialValue }
-        let setter: SetterBlock = { $0.serialize(in: defaults, withKey: defaultName) }
+        let getter: GetterBlock = { SerializableAdapater.deserialize(from: defaults, withKey: defaultName) ?? initialValue }
+        let setter: SetterBlock = { SerializableAdapater($0).serialize(in: defaults, withKey: defaultName)}
+        
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { initialValue.register(in: defaults, withKey: defaultName) }
+        if registerValue { SerializableAdapater(initialValue).register(in: defaults, withKey: defaultName) }
     }
 }
 
@@ -189,7 +190,7 @@ public extension Default where Element: OptionalType, Element.Wrapped: RawRepres
 }
 
 // MARK: UserDefaultsSerializable
-public extension Default where Element: OptionalType, Element.Wrapped: UserDefaultsSerializable {
+public extension Default where Element: OptionalType, Element.Wrapped: UserDefaultsConvertible {
     
     /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsSerializable`.
     ///
@@ -205,17 +206,17 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
         let defaultName = key.name
         let initialValue = defaultValue()
         
-        let getter: GetterBlock = { (Element.Wrapped.deserialize(from: defaults, withKey: defaultName)).map(Element.wrap) ?? initialValue }
+        let getter: GetterBlock = { (SerializableAdapater.deserialize(from: defaults, withKey: defaultName)).map(Element.wrap) ?? initialValue }
         let setter: SetterBlock = {
-            $0.wrapped.map { $0.serialize(in: defaults, withKey: defaultName) }
+            $0.wrapped.map { SerializableAdapater($0).serialize(in: defaults, withKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                if registerValue { initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) } }
+                if registerValue { initialValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { initialValue.wrapped.map { $0.register(in: defaults, withKey: defaultName) } }
+        if registerValue { initialValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: defaultName) } }
     }
 }

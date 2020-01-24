@@ -54,7 +54,7 @@ public extension UserDefaults {
     /// Returns any `UserDefaultsCodable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T? {
-        self.data(forKey: defaultName).flatMap { try? JSONDecoder().decode(T.self, from: $0) }
+        self.data(forKey: defaultName).flatMap { Self.object(from: $0) }
     }
     
     /// Adds the given value to the registration domain using the given key.
@@ -89,7 +89,7 @@ public extension UserDefaults {
     ///
     ///
     /// - Parameter value: The byte buffer representing the JSON-encoded object
-    private static func data<T: Encodable>(from value: T) -> Data {
+    static func data<T: Encodable>(from value: T) -> Data {
         let encoder = JSONEncoder()
         do {
             return try encoder.encode(value)
@@ -97,5 +97,9 @@ public extension UserDefaults {
         catch {
             fatalError(error.localizedDescription)
         }
+    }
+    
+    static func object<T: Decodable>(from data: Data) -> T? {
+        try? JSONDecoder().decode(T.self, from: data)
     }
 }

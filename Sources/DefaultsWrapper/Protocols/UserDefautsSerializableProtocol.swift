@@ -27,8 +27,11 @@
 
 import Foundation
 
-/// A type that can serialize and deserialize itself in the user's defaults database.
-public protocol UserDefaultsSerializable {
+/// A type that can serialize and deserialize itself in and from the user's defaults database.
+typealias UserDefaultsSerializable = DefaultsSerializable&DefaultsDeserializable
+
+/// A type that can serialize itself in the user's defaults database.
+protocol DefaultsSerializable {
     
     /// Serializes `self` in the given `UserDefaults` instance.
     /// - Parameters:
@@ -42,10 +45,39 @@ public protocol UserDefaultsSerializable {
     ///   - defaults: The database in which to register the serialized `self`.
     ///   - defaultName: The key associated with the registered serialized `self`.
     func register(in defaults: UserDefaults, withKey defaultName: String)
+}
+
+/// A type that can deserialize itself from the user's defaults database.
+protocol DefaultsDeserializable {
+    associatedtype DeserializedType
     
     /// Deserializes and returns any instance of `Self` associated with the given key from the given `UserDefaults` instance. Returns `nil` otherwize
     /// - Parameters:
     ///   - defaults: The database in which to try to deserialize an instance of `Self`.
     ///   - defaultName: The key associated with the stored serialized `self`.
-    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Self?
+    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> DeserializedType?
+}
+
+struct SerializableAdapater<Convertible: UserDefaultsConvertible>: DefaultsSerializable {
+    private let convertible: Convertible
+    
+    init(_ convertible: Convertible) {
+        self.convertible = convertible
+    }
+    
+    func serialize(in defaults: UserDefaults, withKey defaultName: String) {
+        defaults.set(self.convertible.convertedObject(), forKey: defaultName)
+    }
+    
+    func register(in defaults: UserDefaults, withKey defaultName: String) {
+        defaults.register(self.convertible.convertedObject(), forKey: defaultName)
+    }
+}
+
+extension SerializableAdapater: DefaultsDeserializable {
+    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Convertible?  {
+        defaults.object(forKey: defaultName).flatMap {
+            $0 as? Convertible.PropertyListSerializableType
+        }.flatMap(Convertible.instanciate(from:))
+    }
 }

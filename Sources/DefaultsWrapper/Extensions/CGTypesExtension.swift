@@ -27,7 +27,7 @@
 
 import CoreGraphics
 
-extension CGFloat: UserDefaultsConvertible {
+extension CGFloat: _UserDefaultsConvertible {
     func convert() -> Double {
         Double(self)
     }
@@ -37,7 +37,7 @@ extension CGFloat: UserDefaultsConvertible {
     }
 }
 
-extension CGPoint: UserDefaultsConvertible {
+extension CGPoint: _UserDefaultsConvertible {
     func convert() -> [String: Double] {
         ["x": self.x.convert(), "y": self.y.convert()]
     }
@@ -49,7 +49,7 @@ extension CGPoint: UserDefaultsConvertible {
     }
 }
 
-extension CGSize: UserDefaultsConvertible {
+extension CGSize: _UserDefaultsConvertible {
     func convert() -> [String: Double] {
         ["width": Double(self.width), "height": Double(self.height)]
     }
@@ -61,7 +61,7 @@ extension CGSize: UserDefaultsConvertible {
     }
 }
 
-extension CGRect: UserDefaultsConvertible {
+extension CGRect: _UserDefaultsConvertible {
     func convert() -> [String: [String: Double]] {
         ["origin": self.origin.convert(), "size": self.size.convert()]
     }
@@ -74,7 +74,7 @@ extension CGRect: UserDefaultsConvertible {
     }
 }
 
-extension CGVector: UserDefaultsConvertible {
+extension CGVector: _UserDefaultsConvertible {
     func convert() -> [String: Double] {
         ["dx": self.dx.convert(), "dy": self.dy.convert()]
     }
@@ -86,7 +86,7 @@ extension CGVector: UserDefaultsConvertible {
     }
 }
 
-extension CGAffineTransform: UserDefaultsConvertible {
+extension CGAffineTransform: _UserDefaultsConvertible {
     func convert() -> [Double] {
         [a, b, c, d, tx, ty].map { $0.convert() }
     }

@@ -27,24 +27,36 @@
 
 import Foundation
 
-protocol UserDefaultsConvertible: UserDefaultsSerializable {
-    associatedtype SerializableType: PropertyListSerializable
+public protocol UserDefaultsConvertible {
+    associatedtype PropertyListSerializableType: PropertyListSerializable
     
-    func convert() -> SerializableType
-    static func reverse(from object: SerializableType) -> Self?
+    /// Converts `self` to a serializable type.
+    func convertedObject() -> PropertyListSerializableType
+    
+    /// Converts the serialized object back.
+    /// - Parameter object: The serialized object.
+    static func instanciate(from object: PropertyListSerializableType) -> Self?
 }
 
-extension UserDefaultsConvertible {
-    public func serialize(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.set(self.convert(), forKey: defaultName)
-    }
+/// A type that converts itself to another type which natively fits in an user's defaults database.
+protocol _UserDefaultsConvertible: UserDefaultsConvertible where PropertyListSerializableType == ConvertedType {
+    associatedtype ConvertedType
     
-    public func register(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.register(self.convert(), forKey: defaultName)
-    }
+    /// Converts `self` to a serializable type.
+    func convert() -> ConvertedType
     
-    public static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Self? {
-        defaults.object(forKey: defaultName).flatMap { $0 as? SerializableType }.flatMap(reverse(from: ))
-    }
+    /// Converts the serialized object back.
+    /// - Parameter object: The serialized object.
+    static func reverse(from object: ConvertedType) -> Self?
 }
 
+extension _UserDefaultsConvertible {
+    
+    public func convertedObject() -> ConvertedType {
+        self.convert()
+    }
+    
+    public static func instanciate(from object: ConvertedType) -> Self? {
+        self.reverse(from: object)
+    }
+}

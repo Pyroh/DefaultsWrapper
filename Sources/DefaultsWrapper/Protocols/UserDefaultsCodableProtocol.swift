@@ -28,24 +28,20 @@
 import Foundation
 
 
-/// A type that conforms both to `Codable` and `UserDefaultsSerializable`.
+/// A type that conforms both to `Codable` and `UserDefaultsConvertible`.
 ///
-/// A default implementation is provided for all `UserDefaultsSerializable` methods.
+/// A default implementation is provided for all `UserDefaultsConvertible` methods.
 ///
 /// Make your `Codable` types conform to `UserDefaultsCodable` today and you'll get user's defaults serialization for free 🎁.
-public protocol UserDefaultsCodable: Codable, UserDefaultsSerializable { }
+public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
 
-public extension UserDefaultsCodable {
-    func serialize(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.set(self, forKey: defaultName)
+extension UserDefaultsCodable {
+    public func convertedObject() -> Data {
+        UserDefaults.data(from: self)
     }
     
-    func register(in defaults: UserDefaults, withKey defaultName: String) {
-        defaults.register(self, forKey: defaultName)
-    }
-    
-    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Self? {
-        defaults.decodable(forKey: defaultName)
+    public static func instanciate(from object: Data) -> Self? {
+        UserDefaults.object(from: object)
     }
 }
 
