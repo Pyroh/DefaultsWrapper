@@ -62,7 +62,7 @@ public extension Default where Element: PropertyListSerializable {
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
@@ -86,7 +86,7 @@ public extension Default where Element: RawRepresentable, Element.RawValue: Prop
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName) ?? initialValue }
@@ -110,7 +110,7 @@ public extension Default where Element: UserDefaultsConvertible {
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { SerializableAdapater.deserialize(from: defaults, withKey: defaultName) ?? initialValue }
@@ -139,7 +139,7 @@ public extension Default where Element: OptionalType, Element.Wrapped: PropertyL
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue }
@@ -171,7 +171,7 @@ public extension Default where Element: OptionalType, Element.Wrapped: RawRepres
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? initialValue }
@@ -203,7 +203,7 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(key: DefaultName, defaultValue: @autoclosure DefaultValueProvider = Element.nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        let defaultName = key.name
+        let defaultName = key.rawValue
         let initialValue = defaultValue()
         
         let getter: GetterBlock = { (SerializableAdapater.deserialize(from: defaults, withKey: defaultName)).map(Element.wrap) ?? initialValue }

@@ -45,23 +45,21 @@
 /// ImInNeedOfA(defaultName: "somePropertyKey")
 /// ```
 /// will produce the same result.
-public struct DefaultName: ExpressibleByStringLiteral {
+public struct DefaultName: RawRepresentable, ExpressibleByStringLiteral {
     public typealias StringLiteralType = String
     
-    /// The actual key
-    let name: String
+    public var rawValue: String
     
-    public init(stringLiteral value: Self.StringLiteralType) {
-        self = Self(name: value)
+    public init(stringLiteral value: String) {
+        self.rawValue = value
     }
     
-    /// Creates an instance based on the given name.
-    /// - Parameter name: The key.
-    public init(name: String) {
-        self.name = name
+    public init?(rawValue: String) {
+        self.rawValue = rawValue
     }
 }
 
 extension DefaultName: CustomStringConvertible {
-    public var description: String { self.name }
+    public var description: String { self.rawValue }
 }
+
