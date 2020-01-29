@@ -42,7 +42,7 @@ public extension UserDefaults {
     ///   - value: The value to store in the defaults database.
     ///   - defaultName: The key with which to associate the value.
     func set<T: UserDefaultsCodable>(_ value: T, forKey defaultName: String) {
-        self.set(Self.data(from: value), forKey: defaultName)
+        self.set(JSONCoding.data(from: value), forKey: defaultName)
     }
     
     /// Returns any `RawReprensentable` value associated with the specified key.
@@ -54,7 +54,7 @@ public extension UserDefaults {
     /// Returns any `UserDefaultsCodable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T? {
-        self.data(forKey: defaultName).flatMap { Self.object(from: $0) }
+        self.data(forKey: defaultName).flatMap { JSONCoding.object(from: $0) }
     }
     
     /// Adds the given value to the registration domain using the given key.
@@ -78,28 +78,8 @@ public extension UserDefaults {
     ///   - value: The object to register.
     ///   - defaultName: The object's key in the registration domain.
     func register<T: UserDefaultsCodable>(_ value: T, forKey defaultName: String) {
-        self.register(Self.data(from: value), forKey: defaultName)
+        self.register(JSONCoding.data(from: value), forKey: defaultName)
     }
-    
-    /// Encodes any `Encodable` object to JSON and returns the corresponding JSON utf8 string as a byte buffer.
-    ///
-    /// - Attention:
-    ///     This method will stop execution if the `value` encoding fails.
-    ///     `Encodable` type failing to encode is a serious issue and must be handled at coding time.
-    ///
-    ///
-    /// - Parameter value: The byte buffer representing the JSON-encoded object
-    static func data<T: Encodable>(from value: T) -> Data {
-        let encoder = JSONEncoder()
-        do {
-            return try encoder.encode(value)
-        }
-        catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    static func object<T: Decodable>(from data: Data) -> T? {
-        try? JSONDecoder().decode(T.self, from: data)
+}
     }
 }

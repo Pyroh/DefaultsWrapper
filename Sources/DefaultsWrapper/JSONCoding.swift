@@ -1,5 +1,5 @@
 //
-//  UserDefaultsCodableProtocol.swift
+//  JSONCoding.swift
 //
 //  DefaultsWrapper
 //
@@ -27,22 +27,29 @@
 
 import Foundation
 
-
-/// A type that conforms both to `Codable` and `UserDefaultsConvertible`.
-///
-/// A default implementation is provided for all `UserDefaultsConvertible` methods.
-///
-/// Make your `Codable` types conform to `UserDefaultsCodable` today and you'll get user's defaults serialization for free 🎁.
-public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
-
-extension UserDefaultsCodable {
-    public func convertedObject() -> Data {
-        JSONCoding.data(from: self)
+enum JSONCoding {
+    
+    /// Encodes any `Encodable` object to JSON and returns the corresponding JSON utf8 string as a `Data` object.
+    ///
+    /// - Attention:
+    ///     This method will stop execution if the `value` encoding fails.
+    ///     `Encodable` type failing to encode is a serious issue and must be handled at design time.
+    ///
+    /// - Parameter value: The object to encode.
+    static func data<T: Encodable>(from value: T) -> Data {
+        let encoder = JSONEncoder()
+        do {
+            return try encoder.encode(value)
+        }
+        catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
-    public static func instanciate(from object: Data) -> Self? {
-        JSONCoding.object(from: object)
+    
+    /// Attempt to decode any `Decodable` object fron the given `Data` object and return it on success. Return `nil` otherwise.
+    /// - Parameter data: the byte buffer to try and decode an object from.
+    static func object<T: Decodable>(from data: Data) -> T? {
+        try? JSONDecoder().decode(T.self, from: data)
     }
 }
-
-
