@@ -70,7 +70,9 @@ public extension Default where Element: PropertyListSerializable {
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { defaults.register(initialValue, forKey: defaultName) }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            defaults.register(initialValue, forKey: defaultName)
+        }
     }
 }
 
@@ -94,7 +96,9 @@ public extension Default where Element: RawRepresentable, Element.RawValue: Prop
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { defaults.register(initialValue, forKey: defaultName) }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            defaults.register(initialValue, forKey: defaultName)
+        }
     }
 }
 
@@ -119,7 +123,9 @@ public extension Default where Element: UserDefaultsConvertible {
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { SerializableAdapater(initialValue).register(in: defaults, withKey: defaultName) }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            SerializableAdapater(initialValue).register(in: defaults, withKey: defaultName)
+        }
     }
 }
 
@@ -147,13 +153,14 @@ public extension Default where Element: OptionalType, Element.Wrapped: PropertyL
             $0.wrapped.map { defaults.set($0, forKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
+        }
     }
 }
 // MARK: RawRepresentable
@@ -179,13 +186,14 @@ public extension Default where Element: OptionalType, Element.Wrapped: RawRepres
             $0.wrapped.map { defaults.set($0, forKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { initialValue.wrapped.map { defaults.register($0, forKey: defaultName) } }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            initialValue.wrapped.map { defaults.register($0, forKey: defaultName) }
+        }
     }
 }
 
@@ -211,12 +219,13 @@ public extension Default where Element: OptionalType, Element.Wrapped: UserDefau
             $0.wrapped.map { SerializableAdapater($0).serialize(in: defaults, withKey: defaultName) }
             if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
-                if registerValue { initialValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: defaultName) } }
             }
         }
         
         self = Self(getter: getter, setter: setter)
         
-        if registerValue { initialValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: defaultName) } }
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            initialValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: defaultName) }
+        }
     }
 }
