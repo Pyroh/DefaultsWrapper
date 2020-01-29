@@ -81,5 +81,14 @@ public extension UserDefaults {
         self.register(JSONCoding.data(from: value), forKey: defaultName)
     }
 }
+
+extension UserDefaults {
+    
+    /// Returns `true` if any value is associated with the given key, `false` otherwise.
+    /// - Parameter defaultName: The with which a value could be associated
+    func hasValue(forKey defaultName: String) -> Bool {
+        self.object(forKey: defaultName) != nil
+    }
+}
     }
 }
