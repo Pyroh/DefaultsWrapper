@@ -90,5 +90,137 @@ extension UserDefaults {
         self.object(forKey: defaultName) != nil
     }
 }
+
+public extension UserDefaults {
+    /// Sets the value of the specified default key to the specified `CGFloat` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGFloat, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGFloat` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgFloat(forKey defaultName: String) -> CGFloat {
+        (self.object(forKey: defaultName) as? CGFloat.ConvertedType).flatMap(CGFloat.reverse(from:)) ?? .zero
+    }
+    
+    /// Adds the given `CGFloat` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGFloat, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `CGPoint` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGPoint, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGPoint` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgPoint(forKey defaultName: String) -> CGPoint {
+        (self.object(forKey: defaultName) as? CGPoint.ConvertedType).flatMap(CGPoint.reverse(from:)) ?? .zero
+    }
+    
+    /// Adds the given `CGPoint` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGPoint, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `CGSize` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGSize, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGSize` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgSize(forKey defaultName: String) -> CGSize {
+        (self.object(forKey: defaultName) as? CGSize.ConvertedType).flatMap(CGSize.reverse(from:)) ?? .zero
+    }
+    
+    /// Adds the given `CGSize` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGSize, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `CGRect` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGRect, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGRect` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgRect(forKey defaultName: String) -> CGRect {
+        (self.object(forKey: defaultName) as? CGRect.ConvertedType).flatMap(CGRect.reverse(from:)) ?? .zero
+    }
+    
+    /// Adds the given `CGRect` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGRect, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `CGVector` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGVector, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGVector` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgVector(forKey defaultName: String) -> CGVector {
+        (self.object(forKey: defaultName) as? CGVector.ConvertedType).flatMap(CGVector.reverse(from:)) ?? .zero
+    }
+    
+    /// Adds the given `CGVector` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGVector, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `CGAffineTransform` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: CGAffineTransform, forKey defaultName: String) {
+        self.set(value.convert(), forKey: defaultName)
+    }
+    
+    /// Returns the `CGAffineTransform` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func cgAffineTransform(forKey defaultName: String) -> CGAffineTransform {
+        (self.object(forKey: defaultName) as? CGAffineTransform.ConvertedType).flatMap(CGAffineTransform.reverse(from:)) ?? .identity
+    }
+    
+    /// Adds the given `CGAffineTransform` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: CGAffineTransform, forKey defaultName: String) {
+        self.register(value.convert(), forKey: defaultName)
     }
 }
