@@ -1,103 +1,31 @@
 import XCTest
-@testable import DefaultsWrapper
+import DefaultsWrapper
 
-extension DefaultName {
-    static let doubleValue: DefaultName = "doubleValue"
-    static let optionalDoubleValue: DefaultName = "optionalDoubleValue"
-    static let optionalNilDoubleValue: DefaultName = "optionalNilDoubleValue"
-    
-    static let enumValue: DefaultName = "enumValue"
-    static let optionalEnumValue: DefaultName = "optionalEnumValue"
-    static let optionalNilEnumValue: DefaultName = "optionalNilEnumValue"
-    
-    static let codableValue: DefaultName = "codableValue"
-    static let optionalcodableValue: DefaultName = "optionalcodableValue"
-    static let optionalNilcodableValue: DefaultName = "optionalNilcodableValue"
-    
-    static var all: [DefaultName] { [
-            .doubleValue,
-            .optionalDoubleValue,
-            .optionalNilDoubleValue,
-            
-            .enumValue,
-            .optionalEnumValue,
-            .optionalNilEnumValue,
-            
-            .codableValue,
-            .optionalcodableValue,
-            .optionalNilcodableValue,
-        ]
-    }
-}
-
-func eraseDefaults() {
-    DefaultName.all.lazy.map(key).forEach(UserDefaults.standard.removeObject(forKey:))
-}
-
-func key(_ key: DefaultName) -> String { key.name }
-
-enum Direction: Int, UserDefaultsSerializable, Codable {
-    case north = 0
-    case west, south, east
-}
-
-struct CodableStruct: UserDefaultsCodable, Equatable {
-    var intValue: Int = 42
-    var doubleValue: Double = 42
-    
-    var stringValue: String = "Hello"
-    var direction: Direction = .north
-    
-    var scaledValues: [Int] = [0, 10, 20 , 30]
+struct S {
+    @Default(key: "someKey", defaultValue: "Hello")
+    var someValue: String
 }
 
 class C {
-    @Default(key: .doubleValue, defaultValue: 42)
-    var doubleValue: Double
-    @Default(key: .optionalDoubleValue, defaultValue: 42)
-    var optionalDoubleValue: Double?
-    @Default(key: .optionalNilDoubleValue)
-    var optionalNilDoubleValue: Double?
-    
-    @Default(key: .enumValue, defaultValue: .north)
-    var enumValue: Direction
-    @Default(key: .optionalEnumValue, defaultValue: .north)
-    var optionalEnumValue: Direction?
-    @Default(key: .optionalNilEnumValue)
-    var optionalNilEnumValue: Direction?
-    
-    @Default(key: .codableValue, defaultValue: CodableStruct())
-    var codableValue: CodableStruct
-    @Default(key: .optionalcodableValue, defaultValue: CodableStruct())
-    var optionalcodableValue: CodableStruct?
-    @Default(key: .optionalNilcodableValue)
-    var optionalNilcodableValue: CodableStruct?
+    @Default(key: "someKey", defaultValue: "World")
+    var someValue: String
 }
 
 final class DefaultsWrapperTests: XCTestCase {
-    func testWrapperCreation() {
-        eraseDefaults()
-        
-        let c = C()
-        
-        XCTAssert(c.doubleValue == 42)
-        XCTAssert(c.optionalDoubleValue == 42)
-        XCTAssert(c.optionalNilDoubleValue == nil)
-        
-        XCTAssert(c.enumValue == .north)
-        XCTAssert(c.optionalEnumValue == .north)
-        XCTAssert(c.optionalNilEnumValue == nil)
-        
-        XCTAssert(c.codableValue == CodableStruct())
-        XCTAssert(c.optionalcodableValue == CodableStruct())
-        XCTAssert(c.optionalNilcodableValue == nil)
+    func test() {
+        let d = UserDefaults.standard
+        d.register(42, forKey: "n")
+        XCTAssert(d.integer(forKey: "n") == 42)
+        d.removeObject(forKey: "n")
+        XCTAssert(d.integer(forKey: "n") == 42)
+        d.register(69, forKey: "n")
+        XCTAssert(d.integer(forKey: "n") == 69)
     }
     
-    
-    func testWrapperVsDefaults() {
+    func testWrapper() {
         eraseDefaults()
         
-        let c = C()
+        let c = TestCase()
         let d = UserDefaults.standard
         
         c.doubleValue = 23
@@ -151,10 +79,137 @@ final class DefaultsWrapperTests: XCTestCase {
         XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == cs3)
         c.optionalNilcodableValue = nil
         XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nil)
+        
+        c.arrayValue = [4, 5, 6]
+        XCTAssert(d.array(forKey: key(.arrayValue)) as? [Int] == [4, 5, 6])
+        
+        c.optionalArrayValue = [7, 8, 9]
+        XCTAssert(d.array(forKey: key(.optionalArrayValue)) as? [Int] == [7, 8, 9])
+        c.optionalArrayValue = nil
+        XCTAssert(d.array(forKey: key(.optionalArrayValue)) as? [Int] == [1, 2, 3])
+        
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
+        c.optionalNilArrayValue = [1, 2, 3]
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == [1, 2, 3])
+        c.optionalNilArrayValue = nil
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
+    }
+    
+    
+    func testWrapperWithCGTypes() {
+        eraseDefaults()
+        
+        let cg = CGTestCase()
+        let d = UserDefaults.standard
+        
+        // CGFloat
+        
+        cg.floatValue = 42
+        XCTAssert(d.object(forKey: key(.floatValue)) as? Double == 42)
+        
+        
+        cg.optionalFloatValue = 42
+        XCTAssert(d.object(forKey: key(.optionalFloatValue)) as? Double == 42)
+        cg.optionalFloatValue = nil
+        XCTAssert(d.object(forKey: key(.optionalFloatValue)) as? Double == 0)
+        
+        XCTAssert(d.object(forKey: key(.optionalNilFloatValue)) == nil)
+        cg.optionalNilFloatValue = 42
+        XCTAssert(d.object(forKey: key(.optionalNilFloatValue)) as? Double == 42)
+        cg.optionalNilFloatValue = nil
+        XCTAssert(d.object(forKey: key(.optionalNilFloatValue)) == nil)
+        
+        // CGPoint
+        
+        cg.pointValue = .init(x: 1, y: 2)
+        XCTAssert(d.dictionary(forKey: key(.pointValue)) as? [String: Double] == ["x": 1.0, "y": 2.0])
+        
+        cg.optionalPointValue = .init(x: 1, y: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalPointValue)) as? [String: Double] == ["x": 1.0, "y": 2.0])
+        cg.optionalPointValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalPointValue)) as? [String: Double] == ["x": 0.0, "y": 0.0])
+        
+        XCTAssert(d.dictionary(forKey: key(.optionalNilPointValue)) == nil)
+        cg.optionalNilPointValue = .init(x: 1, y: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalNilPointValue)) as? [String: Double] == ["x": 1.0, "y": 2.0])
+        cg.optionalNilPointValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalNilPointValue)) == nil)
+        
+        // CGSize
+        
+        cg.sizeValue = .init(width: 1, height: 2)
+        XCTAssert(d.dictionary(forKey: key(.sizeValue)) as? [String: Double] == ["width": 1.0, "height": 2.0])
+        
+        cg.optionalSizeValue = .init(width: 1, height: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalSizeValue)) as? [String: Double] == ["width": 1.0, "height": 2.0])
+        cg.optionalSizeValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalSizeValue)) as? [String: Double] == ["width": 0.0, "height": 0.0])
+        
+        XCTAssert(d.dictionary(forKey: key(.optionalNilSizeValue)) == nil)
+        cg.optionalNilSizeValue = .init(width: 1, height: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalNilSizeValue)) as? [String: Double] == ["width": 1.0, "height": 2.0])
+        cg.optionalNilSizeValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalNilSizeValue)) == nil)
+        
+        // CGRect
+        
+        let rectRef = CGRect(origin: .init(x: 1, y: 2), size: .init(width: 3, height: 4))
+        let rectDictRef = ["origin": ["x": 1.0, "y": 2.0], "size": ["width": 3.0, "height": 4.0]]
+        let zeroDictRef = ["origin": ["x": 0.0, "y": 0.0], "size": ["width": 0.0, "height": 0.0]]
+        
+        cg.rectValue = rectRef
+        XCTAssert(d.dictionary(forKey: key(.rectValue)) as? [String: [String: Double]] == rectDictRef)
+        
+        cg.optionalRectValue = rectRef
+        XCTAssert(d.dictionary(forKey: key(.optionalRectValue)) as? [String: [String: Double]] == rectDictRef)
+        cg.optionalRectValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalRectValue)) as? [String: [String: Double]] == zeroDictRef)
+        
+        XCTAssert(d.dictionary(forKey: key(.optionalNilRectValue)) == nil)
+        cg.optionalNilRectValue = rectRef
+        XCTAssert(d.dictionary(forKey: key(.optionalNilRectValue)) as? [String: [String: Double]] == rectDictRef)
+        cg.optionalNilRectValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalNilRectValue)) == nil)
+        
+        // CGVector
+        
+        cg.vectorValue = .init(dx: 1, dy: 2)
+        XCTAssert(d.dictionary(forKey: key(.vectorValue)) as? [String: Double] == ["dx": 1.0, "dy": 2.0])
+        
+        cg.optionalVectorValue = .init(dx: 1, dy: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalVectorValue)) as? [String: Double] == ["dx": 1.0, "dy": 2.0])
+        cg.optionalVectorValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalVectorValue)) as? [String: Double] == ["dx": 0.0, "dy": 0.0])
+        
+        XCTAssert(d.dictionary(forKey: key(.optionalNilVectorValue)) == nil)
+        cg.optionalNilVectorValue = .init(dx: 1, dy: 2)
+        XCTAssert(d.dictionary(forKey: key(.optionalNilVectorValue)) as? [String: Double] == ["dx": 1.0, "dy": 2.0])
+        cg.optionalNilVectorValue = nil
+        XCTAssert(d.dictionary(forKey: key(.optionalNilVectorValue)) == nil)
+        
+        // CGAffineTransform
+        
+        let transRef = CGAffineTransform(a: 1.0, b: 2.0, c: 3.0, d: 4.0, tx: 5.0, ty: 6.0)
+        let transArrayRef = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+        let identityArrayRef = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+        
+        cg.transformValue = transRef
+        XCTAssert(d.array(forKey: key(.transformValue)) as? [Double] == transArrayRef)
+        
+        cg.optionalTransformValue = transRef
+        XCTAssert(d.array(forKey: key(.optionalTransformValue)) as? [Double] == transArrayRef)
+        cg.optionalTransformValue = nil
+        XCTAssert(d.array(forKey: key(.optionalTransformValue)) as? [Double] == identityArrayRef)
+        
+        XCTAssert(d.array(forKey: key(.optionalNilTransformValue)) == nil)
+        cg.optionalNilTransformValue = transRef
+        XCTAssert(d.array(forKey: key(.optionalNilTransformValue)) as? [Double] == transArrayRef)
+        cg.optionalNilTransformValue = nil
+        XCTAssert(d.array(forKey: key(.optionalNilTransformValue)) == nil)
     }
 
     static var allTests = [
-        ("testWrapperCreation", testWrapperCreation),
-        ("testWrapperVsDefaults", testWrapperVsDefaults),
+        ("testWrapper", testWrapper),
+        ("testWrapperWithCGTypes", testWrapperWithCGTypes),
     ]
 }
