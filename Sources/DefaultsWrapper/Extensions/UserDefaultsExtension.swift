@@ -41,7 +41,7 @@ public extension UserDefaults {
     /// - Parameters:
     ///   - value: The value to store in the defaults database.
     ///   - defaultName: The key with which to associate the value.
-    func set<T: Encodable>(_ value: T, forKey defaultName: String) {
+    func set<T: UserDefaultsCodable>(_ value: T, forKey defaultName: String) {
         self.set(JSONCoding.data(from: value), forKey: defaultName)
     }
     
@@ -53,7 +53,7 @@ public extension UserDefaults {
     
     /// Returns any `UserDefaultsCodable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
-    func decodable<T: Decodable>(forKey defaultName: String) -> T? {
+    func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T? {
         self.data(forKey: defaultName).flatMap { JSONCoding.object(from: $0) }
     }
     

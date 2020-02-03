@@ -1,7 +1,7 @@
 [![Swift](https://img.shields.io/badge/Swift-5.1-orange.svg?style=flat)](https://swift.org)
 [![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS-lightgrey.svg)](https://developer.apple.com/swift/)
+[![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-green.svg?style=flat)](https://swift.org/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
-[![Swift Package Manager compatible](https://img.shields.io/badge/Swift_Package_Manager-compatible-green.svg?style=flat)](https://swift.org/package-manager/)
 
 # DefaultsWrapper
 
@@ -10,7 +10,7 @@
 1. It's new
 1. It supports any type that `UserDefaults` already supports 
 1. It's type-safe
-1. It adds support for `enum`'s _out of the box_*
+1. It adds support for `enum`'s _out-of-the-box_*
 1. It provides support for `Encodable` types**
 1. It can be used with the popular `CoreGraphics` value types 
 1. It can be used with optional and non-optional values
@@ -34,7 +34,7 @@ struct Game {
 }
 ```
 
-As it is easy to make mistake using string literal keys **DefaultsWrapper** also offers a `DefaultName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What should be considered as a best practice is to declare all keys at once inside a `DefaultName` extension :
+As it is easy to make mistake using string literal keys **DefaultsWrapper** also introduces a `DefaultName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What could be considered as a best practice is to declare all keys at once inside a `DefaultName` extension :
 
 ```Swift
 extension DefaultName {
@@ -54,7 +54,6 @@ But you still can conveniently use string literals.
 
 _*Conditions may apply._ [See here](#enum-values-support).  
 _**The target type should conform to `UserDefaultsCodable` rather than `Codable`._ [See here](#Support-for-Codable-types)
-
 
 ## Requirements
 
@@ -79,13 +78,14 @@ dependencies: [
 
 Then `import DefaultsWrapper` in every file where you want to use it.
 
-Or you can add the `DefaultWrapper` folder directly to your code. You can even copy/paste the code somewhere inside your own code.  
+Or you can add the `DefaultsWrapper` folder directly to your project. You can even copy/paste the code somewhere inside your own code.  
 **DefaultsWrapper** doesn't need any dependency.
 
 ## Using `@Default`
-Although you can add support for any type you want `@Default` come bundled with free support for a bunch of types that should cover most of the cases. If what is already supported is not enough to fit your needs just make your type conform to `UserDefaultsConvertible` and write the conversion algorithm. If you don't state otherwise the default value is added to the registration domain ([see here](#Default-value-registration)).
+Although you can add support for any type you want `@Default` come bundled with free support for a bunch of types that should cover most of the cases. If what is already supported is not enough to fit your needs just make your type conform to `UserDefaultsConvertible` and write the conversion code.  
+If you don't state otherwise the default value is added to the registration domain ([see here](#Default-value-registration)).
 
-`@Default` offers this initializer for non-optional types ([see here](#Dealing-with-optionals) for more information about `@Default` and optional types)  :
+`@Default` offers this initializer when wrapping non-optional types ([see here](#Dealing-with-optionals) for more information about `@Default` and optional types)  :
 
 ```Swift
 init(key: DefaultName, 
@@ -100,8 +100,8 @@ init(key: DefaultName,
 
 ### *Standard* types
 Since `UserDefaults` won't accept any kind of value itself `@Default` must not try and pass a value of an *illegal* type to an `UserDefaults` instance.
-Reading [ Apple's `UserDefaults`' documentation](https://developer.apple.com/documentation/foundation/userdefaults) the type of an object a user's defaults database accepts can be one of these: `NSData`, `NSString`, `NSNumber`, `NSDate`, `NSArray`, or `NSDictionary`. Since macOS 10.6, `NSURL` has been invited to the party.   
-Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Double`, `Float`, `Bool`, `String`, `Data`, `Date`, and `URL`. `Array` is also supported if its `Element` type is of one of these `UserDefaults` supports. And Finally `Dictionnary` is supported to if its `Key` is in fact `String` and if its `Value` type is something supported by `UserDefaults`.
+Reading [Apple's `UserDefaults`' documentation](https://developer.apple.com/documentation/foundation/userdefaults) the type of an object a user's defaults database accepts can be one of these: `NSData`, `NSString`, `NSNumber`, `NSDate`, `NSArray`, or `NSDictionary`. Since macOS 10.6, `NSURL` has been invited to the party.   
+Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Double`, `Float`, `Bool`, `String`, `Data`, `Date`, and `URL`. `Array` is also supported if its `Element` type is of one of these `UserDefaults` supports. And Finally `Dictionnary` is supported too if its `Key` is in fact `String` and if its `Value` type is something supported by `UserDefaults`.
 
 **DefaultsWrapper** declares a protocol called `PropertyListSerializable`. These types conform to this protocol and **can be used with `@Default` verbatim**:  
 - `Int`
@@ -168,31 +168,31 @@ var playerCount: Int
 Every type usable with `@Default` can also be used while being optional. The wrapper behavior is slightly different when bound to an optional type : 
 
 - **If a default value is provided**: 
-    - the property will never return `nil`
+    - the property **will never return `nil`**
     - it will return the actual value or the default value
     - setting the property to `nil` will remove the value from the user's defaults database
 - **If no default value is provided** or the default value is `nil`: 
-    - the property can return `nil` 
+    - the property **can return `nil`** 
     - it will return the actual value or `nil` if there's no registered value for this key 
     - setting the property to `nil` will remove the value from the user's defaults detabase
 
 ### `CoreGraphics` types
-You cant use these `CoreGraphics` value types directly through `@Default` :
-- CGFloat
-- CGPoint
-- CGSize
-- CGRect
-- CGVector
-- CGAffineTransform
+You cant use these `CoreGraphics` value types directly with `@Default` :
+- `CGFloat`
+- `CGPoint`
+- `CGSize`
+- `CGRect`
+- `CGVector`
+- `CGAffineTransform`
 
-For your convenience these types are not converted to a `Data` blob but to a human-readable `Dictionary`. Sometimes you may need to tweak the defaults by hand using the command line, it will remain possilble to modify the `width` property of the `size` property of `RectangularThing`. As `RectangularThing` is a `CGRect` and every CG type is encoded to a `Dictionary` which keys are the same that the correspongin type property names.  
+For your convenience these types are not converted to a `Data` blob but to a human-readable `Dictionary`. Sometimes you may need to tweak the defaults by hand using the command line, it will remain possilble to modify the `width` property of the `size` property of `RectangularThing`. As `RectangularThing` is a `CGRect` and every CG type is encoded to a `Dictionary` which keys are the same that the corresponding type's property names.  
 
 > **Please note that** :
-> - `CGFloat` is converted to a simple `Double` value rather than a `Dictionary`.
+> - `CGFloat` is converted to a simple `Double` value.
 > - `CGAffineTransform` is converted to an array of `Double` following this order: `a`, `b`, `c`, `d`, `tx` and `ty`.
 
 ### Using your own types
-You may need to put something else in the user's defaults database. For this there's something you can do depending of what the object type actually is.
+You may need to put something else in the user's defaults database. For this there's something you can do depending of what the object's type actually is.
 
 #### The type is `NSString`, `NSNumber`, `NSArray`, or `NSDictionary`
 Simply declare `PropertyListSerializable` conformance for this type somewhere in your code, it's easy as writting `extension NSNumber: PropertyListSerializable { }` (replace `NSNumber` by the right type of course). Use it at your own risk.
@@ -260,7 +260,7 @@ You can store any supported value using the `set` method, to retrieve values her
 
 ```Swift
 func rawReprensentable<T: RawRepresentable>(forKey defaultName: String) -> T? where T.RawValue: PropertyListSerializable
-func decodable<T: Decodable>(forKey defaultName: String) -> T?
+func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T?
 
 // CG Types
 func cgFloat(forKey defaultName: String) -> CGFloat
@@ -271,9 +271,7 @@ func cgVector(forKey defaultName: String) -> CGVector
 func cgAffineTransform(forKey defaultName: String) -> CGAffineTransform
 ```
 
-`Codable` types don't need here to be `UserDefaultsCodable` to be solely used with `UserDefaults`
-
-There is also a `register` method that allows to register only one object instead of a `Dictionary`.
+There is also a `register` method that allows to register only one object instead of a `Dictionary`, for every supported type.
 
 ## License
 
