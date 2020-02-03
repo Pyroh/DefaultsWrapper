@@ -45,16 +45,30 @@ public extension UserDefaults {
         self.set(JSONCoding.data(from: value), forKey: defaultName)
     }
     
+    /// Sets the value of the specified default key to the specified `UserDefaultsConvertible` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set<T: UserDefaultsConvertible>(_ value: T, forKey defaultName: String) {
+        self.set(value.convertedObject(), forKey: defaultName)
+    }
+    
     /// Returns any `RawReprensentable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func rawReprensentable<T: RawRepresentable>(forKey defaultName: String) -> T? where T.RawValue: PropertyListSerializable {
-        self.object(forKey: defaultName).flatMap { $0 as? T.RawValue }.flatMap(T.init(rawValue:))
+        (self.object(forKey: defaultName) as? T.RawValue).flatMap(T.init(rawValue:))
     }
     
     /// Returns any `UserDefaultsCodable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T? {
         self.data(forKey: defaultName).flatMap { JSONCoding.object(from: $0) }
+    }
+    
+    /// Returns any `UserDefaultsConvertible` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func convertible<T: UserDefaultsConvertible>(forKey defaultName: String) -> T? {
+        (self.object(forKey: defaultName) as? T.PropertyListSerializableType).flatMap { T.instanciate(from: $0) }
     }
     
     /// Adds the given value to the registration domain using the given key.
@@ -79,6 +93,14 @@ public extension UserDefaults {
     ///   - defaultName: The object's key in the registration domain.
     func register<T: UserDefaultsCodable>(_ value: T, forKey defaultName: String) {
         self.register(JSONCoding.data(from: value), forKey: defaultName)
+    }
+    
+    /// Adds the given `UserDefaultsConvertible` object to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The object to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register<T: UserDefaultsConvertible>(_ value: T, forKey defaultName: String) {
+        self.register(value.convertedObject(), forKey: defaultName)
     }
 }
 

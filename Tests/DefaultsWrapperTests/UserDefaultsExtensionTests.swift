@@ -3,6 +3,21 @@ import DefaultsWrapper
 
 final class UserDefaultsExtensionTests: XCTestCase {
     
+    func testConvertibleType() {
+        let d = UserDefaults.standard
+    
+        d.removeObject(forKey: "simd")
+        
+        d.register(SIMD2<Int>.zero, forKey: "simd")
+        XCTAssert(d.convertible(forKey: "simd") == SIMD2<Int>.zero)
+        d.set(SIMD2<Int>.one, forKey: "simd")
+        XCTAssert(d.convertible(forKey: "simd") == SIMD2<Int>.one)
+        d.set(SIMD2<Int>(x: 1, y: 2), forKey: "simd")
+        XCTAssert(d.convertible(forKey: "simd") == SIMD2<Int>(x: 1, y: 2))
+        d.removeObject(forKey: "simd")
+        XCTAssert(d.convertible(forKey: "simd") == SIMD2<Int>.zero)
+    }
+    
     func testCGTypes() {
         let d = UserDefaults.standard
         
