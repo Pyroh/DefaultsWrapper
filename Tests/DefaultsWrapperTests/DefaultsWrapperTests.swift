@@ -12,15 +12,6 @@ class C {
 }
 
 final class DefaultsWrapperTests: XCTestCase {
-    func test() {
-        let d = UserDefaults.standard
-        d.register(42, forKey: "n")
-        XCTAssert(d.integer(forKey: "n") == 42)
-        d.removeObject(forKey: "n")
-        XCTAssert(d.integer(forKey: "n") == 42)
-        d.register(69, forKey: "n")
-        XCTAssert(d.integer(forKey: "n") == 69)
-    }
     
     func testWrapper() {
         eraseDefaults()

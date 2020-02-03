@@ -32,7 +32,7 @@ import Foundation
 ///
 /// A default implementation is provided for all `UserDefaultsConvertible` methods.
 ///
-/// Make your `Codable` types conform to `UserDefaultsCodable` today and you'll get user's defaults serialization for free 🎁.
+/// Make your `Codable` types conform to `UserDefaultsCodable` today and get user's defaults serialization for free 🎁.
 public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
 
 extension UserDefaultsCodable {
