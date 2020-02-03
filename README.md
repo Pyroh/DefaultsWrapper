@@ -1,3 +1,8 @@
+[![Swift](https://img.shields.io/badge/Swift-5.1-orange.svg?style=flat)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS-lightgrey.svg)](https://developer.apple.com/swift/)
+[![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
+[![Swift Package Manager compatible](https://img.shields.io/badge/Swift_Package_Manager-compatible-green.svg?style=flat)](https://swift.org/package-manager/)
+
 # DefaultsWrapper
 
 **DefaultsWrapper** is another property wrapper for `UserDefaults`, you write it `@Default`. Why is it more interesting than any other property wrapper for `UserDefaults` ?
