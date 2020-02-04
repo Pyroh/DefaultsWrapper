@@ -24,6 +24,8 @@
 //  SOFTWARE.
 //
 
+@available(*, deprecated, renamed: "UserDefaultsKeyName")
+public typealias DefaultName = UserDefaultsKeyName
 
 /// A `UserDefaults` key.
 ///
@@ -45,10 +47,9 @@
 /// ImInNeedOfA(defaultName: "somePropertyKey")
 /// ```
 /// will produce the same result.
-public struct DefaultName: RawRepresentable, ExpressibleByStringLiteral {
-    public typealias StringLiteralType = String
-    
+public struct UserDefaultsKeyName: RawRepresentable, ExpressibleByStringLiteral, CustomStringConvertible {
     public var rawValue: String
+    public var description: String { self.rawValue }
     
     public init(stringLiteral value: String) {
         self.rawValue = value
@@ -57,9 +58,5 @@ public struct DefaultName: RawRepresentable, ExpressibleByStringLiteral {
     public init?(rawValue: String) {
         self.rawValue = rawValue
     }
-}
-
-extension DefaultName: CustomStringConvertible {
-    public var description: String { self.rawValue }
 }
 

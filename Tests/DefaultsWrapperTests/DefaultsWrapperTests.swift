@@ -2,12 +2,12 @@ import XCTest
 import DefaultsWrapper
 
 struct S {
-    @Default(key: "someKey", defaultValue: "Hello")
+    @Defaults(key: "someKey", defaultValue: "Hello")
     var someValue: String
 }
 
 class C {
-    @Default(key: "someKey", defaultValue: "World")
+    @Defaults(key: "someKey", defaultValue: "World")
     var someValue: String
 }
 

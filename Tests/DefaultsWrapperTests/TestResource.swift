@@ -28,48 +28,48 @@
 import Foundation
 import DefaultsWrapper
 
-extension DefaultName {
-    static let doubleValue: DefaultName = "doubleValue"
-    static let optionalDoubleValue: DefaultName = "optionalDoubleValue"
-    static let optionalNilDoubleValue: DefaultName = "optionalNilDoubleValue"
+extension UserDefaultsKeyName {
+    static let doubleValue: UserDefaultsKeyName = "doubleValue"
+    static let optionalDoubleValue: UserDefaultsKeyName = "optionalDoubleValue"
+    static let optionalNilDoubleValue: UserDefaultsKeyName = "optionalNilDoubleValue"
     
-    static let enumValue: DefaultName = "enumValue"
-    static let optionalEnumValue: DefaultName = "optionalEnumValue"
-    static let optionalNilEnumValue: DefaultName = "optionalNilEnumValue"
+    static let enumValue: UserDefaultsKeyName = "enumValue"
+    static let optionalEnumValue: UserDefaultsKeyName = "optionalEnumValue"
+    static let optionalNilEnumValue: UserDefaultsKeyName = "optionalNilEnumValue"
     
-    static let codableValue: DefaultName = "codableValue"
-    static let optionalcodableValue: DefaultName = "optionalcodableValue"
-    static let optionalNilcodableValue: DefaultName = "optionalNilcodableValue"
+    static let codableValue: UserDefaultsKeyName = "codableValue"
+    static let optionalcodableValue: UserDefaultsKeyName = "optionalcodableValue"
+    static let optionalNilcodableValue: UserDefaultsKeyName = "optionalNilcodableValue"
     
-    static let arrayValue: DefaultName = "arrayValue"
-    static let optionalArrayValue: DefaultName = "optionalArrayValue"
-    static let optionalNilArrayValue: DefaultName = "optionalNilArrayValue"
+    static let arrayValue: UserDefaultsKeyName = "arrayValue"
+    static let optionalArrayValue: UserDefaultsKeyName = "optionalArrayValue"
+    static let optionalNilArrayValue: UserDefaultsKeyName = "optionalNilArrayValue"
     
-    static let floatValue: DefaultName = "floatValue"
-    static let optionalFloatValue: DefaultName = "optionalFloatValue"
-    static let optionalNilFloatValue: DefaultName = "optionalNilFloatValue"
+    static let floatValue: UserDefaultsKeyName = "floatValue"
+    static let optionalFloatValue: UserDefaultsKeyName = "optionalFloatValue"
+    static let optionalNilFloatValue: UserDefaultsKeyName = "optionalNilFloatValue"
     
-    static let pointValue: DefaultName = "pointValue"
-    static let optionalPointValue: DefaultName = "optionalPointValue"
-    static let optionalNilPointValue: DefaultName = "optionalNilPointValue"
+    static let pointValue: UserDefaultsKeyName = "pointValue"
+    static let optionalPointValue: UserDefaultsKeyName = "optionalPointValue"
+    static let optionalNilPointValue: UserDefaultsKeyName = "optionalNilPointValue"
     
-    static let sizeValue: DefaultName = "sizeValue"
-    static let optionalSizeValue: DefaultName = "optionalSizeValue"
-    static let optionalNilSizeValue: DefaultName = "optionalNilSizeValue"
+    static let sizeValue: UserDefaultsKeyName = "sizeValue"
+    static let optionalSizeValue: UserDefaultsKeyName = "optionalSizeValue"
+    static let optionalNilSizeValue: UserDefaultsKeyName = "optionalNilSizeValue"
     
-    static let rectValue: DefaultName = "rectValue"
-    static let optionalRectValue: DefaultName = "optionalRectValue"
-    static let optionalNilRectValue: DefaultName = "optionalNilRectValue"
+    static let rectValue: UserDefaultsKeyName = "rectValue"
+    static let optionalRectValue: UserDefaultsKeyName = "optionalRectValue"
+    static let optionalNilRectValue: UserDefaultsKeyName = "optionalNilRectValue"
     
-    static let vectorValue: DefaultName = "vectorValue"
-    static let optionalVectorValue: DefaultName = "optionalVectorValue"
-    static let optionalNilVectorValue: DefaultName = "optionalNilVectorValue"
+    static let vectorValue: UserDefaultsKeyName = "vectorValue"
+    static let optionalVectorValue: UserDefaultsKeyName = "optionalVectorValue"
+    static let optionalNilVectorValue: UserDefaultsKeyName = "optionalNilVectorValue"
     
-    static let transformValue: DefaultName = "transformValue"
-    static let optionalTransformValue: DefaultName = "optionalTransformValue"
-    static let optionalNilTransformValue: DefaultName = "optionalNilTransformValue"
+    static let transformValue: UserDefaultsKeyName = "transformValue"
+    static let optionalTransformValue: UserDefaultsKeyName = "optionalTransformValue"
+    static let optionalNilTransformValue: UserDefaultsKeyName = "optionalNilTransformValue"
     
-    static var all: [DefaultName] { [
+    static var all: [UserDefaultsKeyName] { [
         .doubleValue,
         .optionalDoubleValue,
         .optionalNilDoubleValue,
@@ -115,76 +115,76 @@ extension DefaultName {
 
 class TestCase {
 
-    @Default(key: .doubleValue, defaultValue: 42)
+    @Defaults(key: .doubleValue, defaultValue: 42)
     var doubleValue: Double
-    @Default(key: .optionalDoubleValue, defaultValue: 42)
+    @Defaults(key: .optionalDoubleValue, defaultValue: 42)
     var optionalDoubleValue: Double?
-    @Default(key: .optionalNilDoubleValue)
+    @Defaults(key: .optionalNilDoubleValue)
     var optionalNilDoubleValue: Double?
     
-    @Default(key: .enumValue, defaultValue: .north)
+    @Defaults(key: .enumValue, defaultValue: .north)
     var enumValue: Direction
-    @Default(key: .optionalEnumValue, defaultValue: .north)
+    @Defaults(key: .optionalEnumValue, defaultValue: .north)
     var optionalEnumValue: Direction?
-    @Default(key: .optionalNilEnumValue)
+    @Defaults(key: .optionalNilEnumValue)
     var optionalNilEnumValue: Direction?
     
-    @Default(key: .codableValue, defaultValue: CodableStruct())
+    @Defaults(key: .codableValue, defaultValue: CodableStruct())
     var codableValue: CodableStruct
-    @Default(key: .optionalcodableValue, defaultValue: CodableStruct())
+    @Defaults(key: .optionalcodableValue, defaultValue: CodableStruct())
     var optionalcodableValue: CodableStruct?
-    @Default(key: .optionalNilcodableValue)
+    @Defaults(key: .optionalNilcodableValue)
     var optionalNilcodableValue: CodableStruct?
     
-    @Default(key: .arrayValue, defaultValue: [1, 2, 3])
+    @Defaults(key: .arrayValue, defaultValue: [1, 2, 3])
     var arrayValue: [Int]
-    @Default(key: .optionalArrayValue, defaultValue: [1, 2, 3])
+    @Defaults(key: .optionalArrayValue, defaultValue: [1, 2, 3])
     var optionalArrayValue: [Int]?
-    @Default(key: .optionalNilArrayValue)
+    @Defaults(key: .optionalNilArrayValue)
     var optionalNilArrayValue: [Int]?
 }
 
 class CGTestCase {
-    @Default(key: .floatValue, defaultValue: .zero)
+    @Defaults(key: .floatValue, defaultValue: .zero)
     var floatValue: CGFloat
-    @Default(key: .optionalFloatValue, defaultValue: .zero)
+    @Defaults(key: .optionalFloatValue, defaultValue: .zero)
     var optionalFloatValue: CGFloat?
-    @Default(key: .optionalNilFloatValue)
+    @Defaults(key: .optionalNilFloatValue)
     var optionalNilFloatValue: CGFloat?
     
-    @Default(key: .pointValue, defaultValue: .zero)
+    @Defaults(key: .pointValue, defaultValue: .zero)
     var pointValue: CGPoint
-    @Default(key: .optionalPointValue, defaultValue: .zero)
+    @Defaults(key: .optionalPointValue, defaultValue: .zero)
     var optionalPointValue: CGPoint?
-    @Default(key: .optionalNilPointValue)
+    @Defaults(key: .optionalNilPointValue)
     var optionalNilPointValue: CGPoint?
     
-    @Default(key: .sizeValue, defaultValue: .zero)
+    @Defaults(key: .sizeValue, defaultValue: .zero)
     var sizeValue: CGSize
-    @Default(key: .optionalSizeValue, defaultValue: .zero)
+    @Defaults(key: .optionalSizeValue, defaultValue: .zero)
     var optionalSizeValue: CGSize?
-    @Default(key: .optionalNilSizeValue)
+    @Defaults(key: .optionalNilSizeValue)
     var optionalNilSizeValue: CGSize?
     
-    @Default(key: .rectValue, defaultValue: .zero)
+    @Defaults(key: .rectValue, defaultValue: .zero)
     var rectValue: CGRect
-    @Default(key: .optionalRectValue, defaultValue: .zero)
+    @Defaults(key: .optionalRectValue, defaultValue: .zero)
     var optionalRectValue: CGRect?
-    @Default(key: .optionalNilRectValue)
+    @Defaults(key: .optionalNilRectValue)
     var optionalNilRectValue: CGRect?
     
-    @Default(key: .vectorValue, defaultValue: .zero)
+    @Defaults(key: .vectorValue, defaultValue: .zero)
     var vectorValue: CGVector
-    @Default(key: .optionalVectorValue, defaultValue: .zero)
+    @Defaults(key: .optionalVectorValue, defaultValue: .zero)
     var optionalVectorValue: CGVector?
-    @Default(key: .optionalNilVectorValue)
+    @Defaults(key: .optionalNilVectorValue)
     var optionalNilVectorValue: CGVector?
     
-    @Default(key: .transformValue, defaultValue: .identity)
+    @Defaults(key: .transformValue, defaultValue: .identity)
     var transformValue: CGAffineTransform
-    @Default(key: .optionalTransformValue, defaultValue: .identity)
+    @Defaults(key: .optionalTransformValue, defaultValue: .identity)
     var optionalTransformValue: CGAffineTransform?
-    @Default(key: .optionalNilTransformValue)
+    @Defaults(key: .optionalNilTransformValue)
     var optionalNilTransformValue:  CGAffineTransform?
 }
 
@@ -205,10 +205,10 @@ struct CodableStruct: UserDefaultsCodable, Equatable {
 }
 
 func eraseDefaults() {
-    DefaultName.all.lazy.map(key).forEach(UserDefaults.standard.removeObject(forKey:))
+    UserDefaultsKeyName.all.lazy.map(key).forEach(UserDefaults.standard.removeObject(forKey:))
 }
 
-func key(_ key: DefaultName) -> String { key.rawValue }
+func key(_ key: UserDefaultsKeyName) -> String { key.rawValue }
 
 extension SIMD2: UserDefaultsConvertible where Scalar == Int {
     public func convertedObject() -> [String: Int] {
