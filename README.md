@@ -5,7 +5,7 @@
 
 # DefaultsWrapper
 
-**DefaultsWrapper** is another property wrapper for `UserDefaults`, you write it `@Default`. Why is it more interesting than any other property wrapper for `UserDefaults` ?
+**DefaultsWrapper** is another property wrapper for `UserDefaults`, you write it `@Defaults`. Why is it more interesting than any other property wrapper for `UserDefaults` ?
 
 1. It's new
 1. It supports any type that `UserDefaults` already supports 
@@ -23,28 +23,28 @@ By the way it's as easy to use as any other property wrapper :
 import DefaultsWrapper
 
 struct Game {
-    @Default(key: "NumberOfPlayers", defaultValue: 3)
+    @Defaults(key: "NumberOfPlayers", defaultValue: 3)
     var playerCount: Int
     
-    @Default(key: "StartingPosition", defaultValue: .zero)
+    @Defaults(key: "StartingPosition", defaultValue: .zero)
     var startPos: CGPoint
     
-    @Default(key: "HighScore")
+    @Defaults(key: "HighScore")
     var highscore: Double?
 }
 ```
 
-As it is easy to make mistake using string literal keys **DefaultsWrapper** also introduces a `DefaultName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What could be considered as a best practice is to declare all keys at once inside a `DefaultName` extension :
+As it is easy to make mistake using string literal keys **DefaultsWrapper** also introduces a `UserDefaultsKeyName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What could be considered as a best practice is to declare all keys at once inside a `UserDefaultsKeyName` extension :
 
 ```Swift
-extension DefaultName {
-    static let numberOfPlayers: DefaultName = "NumberOfPlayers"
-    static let startingPosition: DefaultName = "StartingPosition"
-    static let highScore: DefaultName = "HighScore"
+extension UserDefaultsKeyName {
+    static let numberOfPlayers: UserDefaultsKeyName = "NumberOfPlayers"
+    static let startingPosition: UserDefaultsKeyName = "StartingPosition"
+    static let highScore: UserDefaultsKeyName = "HighScore"
 }
 
 struct Game {
-    @Default(key: .numberOfPlayers, defaultValue: 3)
+    @Defaults(key: .numberOfPlayers, defaultValue: 3)
     var playerCount: Int
     ...
 }
@@ -81,14 +81,14 @@ Then `import DefaultsWrapper` in every file where you want to use it.
 Or you can add the `DefaultsWrapper` folder directly to your project. You can even copy/paste the code somewhere inside your own code.  
 **DefaultsWrapper** doesn't need any dependency.
 
-## Using `@Default`
-Although you can add support for any type you want `@Default` come bundled with free support for a bunch of types that should cover most of the cases. If what is already supported is not enough to fit your needs just make your type conform to `UserDefaultsConvertible` and write the conversion code.  
+## Using `@Defaults`
+Although you can add support for any type you want `@Defaults` come bundled with free support for a bunch of types that should cover most of the cases. If what is already supported is not enough to fit your needs just make your type conform to `UserDefaultsConvertible` and write the conversion code.  
 If you don't state otherwise the default value is added to the registration domain ([see here](#Default-value-registration)).
 
-`@Default` offers this initializer when wrapping non-optional types ([see here](#Dealing-with-optionals) for more information about `@Default` and optional types)  :
+`@Defaults` offers this initializer when wrapping non-optional types ([see here](#Dealing-with-optionals) for more information about `@Defaults` and optional types)  :
 
 ```Swift
-init(key: DefaultName, 
+init(key: UserDefaultsKeyName, 
     defaultValue: @autoclosure DefaultValueProvider, 
     defaults: UserDefaults = .standard, 
     registerValue: Bool = true)
@@ -99,11 +99,11 @@ init(key: DefaultName,
 - `registerValue`: A boolean value that indicates if the default value should be added to de registration domain, [more info here](#Default-value-registration).
 
 ### *Standard* types
-Since `UserDefaults` won't accept any kind of value itself `@Default` must not try and pass a value of an *illegal* type to an `UserDefaults` instance.
+Since `UserDefaults` won't accept any kind of value itself `@Defaults` must not try and pass a value of an *illegal* type to an `UserDefaults` instance.
 Reading [Apple's `UserDefaults`' documentation](https://developer.apple.com/documentation/foundation/userdefaults) the type of an object a user's defaults database accepts can be one of these: `NSData`, `NSString`, `NSNumber`, `NSDate`, `NSArray`, or `NSDictionary`. Since macOS 10.6, `NSURL` has been invited to the party.   
 Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Double`, `Float`, `Bool`, `String`, `Data`, `Date`, and `URL`. `Array` is also supported if its `Element` type is of one of these `UserDefaults` supports. And Finally `Dictionnary` is supported too if its `Key` is in fact `String` and if its `Value` type is something supported by `UserDefaults`.
 
-**DefaultsWrapper** declares a protocol called `PropertyListSerializable`. These types conform to this protocol and **can be used with `@Default` verbatim**:  
+**DefaultsWrapper** declares a protocol called `PropertyListSerializable`. These types conform to this protocol and **can be used with `@Defaults` verbatim**:  
 - `Int`
 - `Double`
 - `Float`
@@ -114,16 +114,16 @@ Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Doubl
 - `URL`
 - `Array` and `Dictonary` also comform to it provided that their respective `Element`, `Key` and `Value` types follow the aforementioned rule. 
 
-Obj-C types are not usable with `@Default`, [not for free at least](#Using-your-own-types).
+Obj-C types are not usable with `@Defaults`, [not for free at least](#Using-your-own-types).
 
 ### `enum` values support
-You can use `enum`' values directly with `@Default` if your `enum` type meets certain requirements :
+You can use `enum`' values directly with `@Defaults` if your `enum` type meets certain requirements :
  - it has a raw value
  - its raw value conforms to `PropertyListSerializable`
 
 > You get this support for free without doing anything. What you shouldn't do is to conform such an `enum` to `UserDefaultsCodable`, use `Codable` instead.
  
-For example this `enum` is accepted by `@Default`:
+For example this `enum` is accepted by `@Defaults`:
 ```Swift
 enum Direction: Int {
     case north = 0
@@ -148,24 +148,24 @@ You can still do something about these. We'll cover this later in [*Using your o
 
 ###  Support for `Codable` types
 `Codable` types are nice to use with `UserDefaults` since they can be transformed into a `Data` blob rather easily. Nonetheless **DefaultsWrapper** declares this `UserDefaultsCodable` protocol.  
-Why? Because most of our  `PropertyListSerializable` conforming types also conform to `Codable` thus using `Double` with `@Default` will cause the compiler to ask itself if it is more `Codable` or `PropertyListSerializable`. Of course it won't find the answer and will end up complaining about it. Nobody wants that.
+Why? Because most of our  `PropertyListSerializable` conforming types also conform to `Codable` thus using `Double` with `@Defaults` will cause the compiler to ask itself if it is more `Codable` or `PropertyListSerializable`. Of course it won't find the answer and will end up complaining about it. Nobody wants that.
 
-Long story short, `UserDefaultsCodable` is `Codable` without being `Codable`. If you want your `Codable` type also being accepted by `@Default` simply comform it to `UserDefaultsCodable` instead. 
+Long story short, `UserDefaultsCodable` is `Codable` without being `Codable`. If you want your `Codable` type also being accepted by `@Defaults` simply comform it to `UserDefaultsCodable` instead. 
 
 ### Default value registration
 `UserDefaults` offers a registration domain where values are associated to keys. Like in the user's defaults database but these values are transient and will never be written to the disk. When your application starts you register a bunch of properties at once —typically in your app delegate's `applicationDidFinishLaunching` method— and you're good to go.   
-`@Default` handles this for you. If a default value is set it will be automatically added to the registration domain. You can declare, register and wrap defaults values in just one line of code.
-You still need to register values you don't wrap with `@Default`. 
+`@Defaults` handles this for you. If a default value is set it will be automatically added to the registration domain. You can declare, register and wrap defaults values in just one line of code.
+You still need to register values you don't wrap with `@Defaults`. 
 
 It's still sadly not a silver bullet. Imagine that you wrap the same value multiple times in multiple places using different default values, what would happen ? It will depend on execution order. You can't predict execution order all the time so you can avoid default value registration by passing `false` to `registerValue` during wrapper initialization :
 
 ```Swift
-@Default(key: "NumberOfPlayers", defaultValue: 3, registerValue: false)
+@Defaults(key: "NumberOfPlayers", defaultValue: 3, registerValue: false)
 var playerCount: Int
 ```
 
 ### Dealing with optionals
-Every type usable with `@Default` can also be used while being optional. The wrapper behavior is slightly different when bound to an optional type : 
+Every type usable with `@Defaults` can also be used while being optional. The wrapper behavior is slightly different when bound to an optional type : 
 
 - **If a default value is provided**: 
     - the property **will never return `nil`**
@@ -177,7 +177,7 @@ Every type usable with `@Default` can also be used while being optional. The wra
     - setting the property to `nil` will remove the value from the user's defaults detabase
 
 ### `CoreGraphics` types
-You cant use these `CoreGraphics` value types directly with `@Default` :
+You cant use these `CoreGraphics` value types directly with `@Defaults` :
 - `CGFloat`
 - `CGPoint`
 - `CGSize`
@@ -255,20 +255,20 @@ extension SIMD2: UserDefaultsConvertible where Scalar: PropertyListSerializable 
 ```
 
 ## `UserDefaults` extension
-An `UserDefault` extension is also publicly accessible in **DefaultsWrapper** and allows any `UserDefaults` instance to support as much types as `@Default`.  
+An `UserDefault` extension is also publicly accessible in **DefaultsWrapper** and allows any `UserDefaults` instance to support as much types as `@Defaults`.  
 You can store any supported value using the `set` method, to retrieve values here are the methods (names are self-explenatory) :
 
 ```Swift
-func rawReprensentable<T: RawRepresentable>(forKey defaultName: String) -> T? where T.RawValue: PropertyListSerializable
-func decodable<T: UserDefaultsCodable>(forKey defaultName: String) -> T?
+func rawReprensentable<T: RawRepresentable>(forKey UserDefaultsKeyName: String) -> T? where T.RawValue: PropertyListSerializable
+func decodable<T: UserDefaultsCodable>(forKey UserDefaultsKeyName: String) -> T?
 
 // CG Types
-func cgFloat(forKey defaultName: String) -> CGFloat
-func cgPoint(forKey defaultName: String) -> CGPoint
-func cgSize(forKey defaultName: String) -> CGSize
-func cgRect(forKey defaultName: String) -> CGRect
-func cgVector(forKey defaultName: String) -> CGVector
-func cgAffineTransform(forKey defaultName: String) -> CGAffineTransform
+func cgFloat(forKey UserDefaultsKeyName: String) -> CGFloat
+func cgPoint(forKey UserDefaultsKeyName: String) -> CGPoint
+func cgSize(forKey UserDefaultsKeyName: String) -> CGSize
+func cgRect(forKey UserDefaultsKeyName: String) -> CGRect
+func cgVector(forKey UserDefaultsKeyName: String) -> CGVector
+func cgAffineTransform(forKey UserDefaultsKeyName: String) -> CGAffineTransform
 ```
 
 There is also a `register` method that allows to register only one object instead of a `Dictionary`, for every supported type.

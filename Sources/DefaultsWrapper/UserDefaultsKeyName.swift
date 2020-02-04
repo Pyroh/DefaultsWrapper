@@ -27,13 +27,13 @@
 @available(*, deprecated, renamed: "UserDefaultsKeyName")
 public typealias DefaultName = UserDefaultsKeyName
 
-/// A `UserDefaults` key.
+/// A `UserDefaultsKeyName` key.
 ///
-/// Since `DefaultName` conforms to `ExpressibleByStringLiteral` a string literal can be used where a `DefaultName` is expected.
+/// Since `UserDefaultsKeyName` conforms to `ExpressibleByStringLiteral` a string literal can be used where a `UserDefaultsKeyName` is expected.
 ///
 /// It means that if there's such a function :
 /// ```Swift
-/// func ImInNeedOfA(defaultName key: DefaultName) {
+/// func ImInNeedOfA(defaultName key: UserDefaultsKeyName) {
 ///     print(key)
 /// }
 /// ```
