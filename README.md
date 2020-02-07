@@ -112,7 +112,7 @@ Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Doubl
 - `Data`
 - `Date`
 - `URL`
-- `Array` and `Dictonary` also comform to it provided that their respective `Element`, `Key` and `Value` types follow the aforementioned rule. 
+- `Array` and `Dictonary` also comform to it provided that their respective `Element` and `Key`  follow the aforementioned rule. Dictionnary still accepts `Any` as `Value` type.
 
 Obj-C types are not usable with `@Defaults`, [not for free at least](#Using-your-own-types).
 

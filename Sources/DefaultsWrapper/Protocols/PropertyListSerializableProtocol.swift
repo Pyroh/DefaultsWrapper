@@ -41,5 +41,5 @@ extension Data: PropertyListSerializable { }
 extension Date: PropertyListSerializable { }
 extension URL: PropertyListSerializable { }
 
-extension Dictionary: PropertyListSerializable where Key == String, Value: PropertyListSerializable { }
+extension Dictionary: PropertyListSerializable where Key == String { }
 extension Array: PropertyListSerializable where Element: PropertyListSerializable { }
