@@ -115,7 +115,6 @@ extension UserDefaultsKeyName {
 }
 
 class TestCase {
-
     @Defaults(key: .doubleValue, defaultValue: 42)
     var doubleValue: Double
     @Defaults(key: .optionalDoubleValue, defaultValue: 42)
@@ -142,6 +141,36 @@ class TestCase {
     @Defaults(key: .optionalArrayValue, defaultValue: [1, 2, 3])
     var optionalArrayValue: [Int]?
     @Defaults(key: .optionalNilArrayValue)
+    var optionalNilArrayValue: [Int]?
+}
+
+class WrappedTestCase {
+    @Defaults(.doubleValue)
+    var doubleValue: Double = 42
+    @Defaults(.optionalDoubleValue)
+    var optionalDoubleValue: Double? = 42
+    @Defaults(.optionalNilDoubleValue)
+    var optionalNilDoubleValue: Double?
+
+    @Defaults(.enumValue )
+    var enumValue: Direction = .north
+    @Defaults(.optionalEnumValue)
+    var optionalEnumValue: Direction? = .north
+    @Defaults(.optionalNilEnumValue)
+    var optionalNilEnumValue: Direction?
+
+    @Defaults(.codableValue)
+    var codableValue: CodableStruct = CodableStruct()
+    @Defaults(.optionalcodableValue)
+    var optionalcodableValue: CodableStruct? = CodableStruct()
+    @Defaults(.optionalNilcodableValue)
+    var optionalNilcodableValue: CodableStruct?
+
+    @Defaults(.arrayValue)
+    var arrayValue: [Int] =  [1, 2, 3]
+    @Defaults(.optionalArrayValue)
+    var optionalArrayValue: [Int]? =  [1, 2, 3]
+    @Defaults(.optionalNilArrayValue)
     var optionalNilArrayValue: [Int]?
 }
 

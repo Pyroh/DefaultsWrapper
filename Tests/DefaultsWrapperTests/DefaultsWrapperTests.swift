@@ -4,11 +4,17 @@ import DefaultsWrapper
 struct S {
     @Defaults(key: "someKey", defaultValue: "Hello")
     var someValue: String
+
+    @Defaults("otherKey")
+    var otherValue: String = "Hello world !"
 }
 
 class C {
     @Defaults(key: "someKey", defaultValue: "World")
     var someValue: String
+
+    @Defaults("otherKey")
+    var otherValue: String = "Hello world !"
 }
 
 final class DefaultsWrapperTests: XCTestCase {
@@ -79,6 +85,79 @@ final class DefaultsWrapperTests: XCTestCase {
         c.optionalArrayValue = nil
         XCTAssert(d.array(forKey: key(.optionalArrayValue)) as? [Int] == [1, 2, 3])
         
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
+        c.optionalNilArrayValue = [1, 2, 3]
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == [1, 2, 3])
+        c.optionalNilArrayValue = nil
+        XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
+    }
+
+    func testWrappedWrapper() {
+        eraseDefaults()
+
+        let c = WrappedTestCase()
+        let d = UserDefaults.standard
+
+        c.doubleValue = 23
+        XCTAssert(d.double(forKey: key(.doubleValue)) == 23)
+
+        c.optionalDoubleValue = 51
+        XCTAssert(d.double(forKey: key(.optionalDoubleValue)) == 51)
+        c.optionalDoubleValue = nil
+        XCTAssert(d.double(forKey: key(.optionalDoubleValue)) == 42)
+
+        XCTAssert(d.object(forKey: key(.optionalNilDoubleValue)) == nil)
+        c.optionalNilDoubleValue = 42
+        XCTAssert(d.double(forKey: key(.optionalNilDoubleValue)) == 42)
+        c.optionalNilDoubleValue = nil
+        XCTAssert(d.object(forKey: key(.optionalNilDoubleValue)) == nil)
+
+        c.enumValue = .south
+        XCTAssert(d.rawReprensentable(forKey: key(.enumValue)) == Direction.south)
+
+        c.optionalEnumValue = .west
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalEnumValue)) == Direction.west)
+        c.optionalEnumValue = nil
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalEnumValue)) == Direction.north)
+
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nil)
+        c.optionalNilEnumValue = .east
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Direction.east)
+        c.optionalNilEnumValue = nil
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nil)
+
+        let csRef = CodableStruct()
+        var cs1 = csRef
+        cs1.intValue = 12
+
+        c.codableValue = cs1
+        XCTAssert(d.decodable(forKey: key(.codableValue)) == cs1)
+
+        var cs2 = cs1
+        cs2.stringValue = "Property wrappers rock !"
+
+        c.optionalcodableValue = cs2
+        XCTAssert(d.decodable(forKey: key(.optionalcodableValue)) == cs2)
+        c.optionalcodableValue = nil
+        XCTAssert(d.decodable(forKey: key(.optionalcodableValue)) == csRef)
+
+        var cs3 = cs2
+        cs3.scaledValues = []
+
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nil)
+        c.optionalNilcodableValue = cs3
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == cs3)
+        c.optionalNilcodableValue = nil
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nil)
+
+        c.arrayValue = [4, 5, 6]
+        XCTAssert(d.array(forKey: key(.arrayValue)) as? [Int] == [4, 5, 6])
+
+        c.optionalArrayValue = [7, 8, 9]
+        XCTAssert(d.array(forKey: key(.optionalArrayValue)) as? [Int] == [7, 8, 9])
+        c.optionalArrayValue = nil
+        XCTAssert(d.array(forKey: key(.optionalArrayValue)) as? [Int] == [1, 2, 3])
+
         XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
         c.optionalNilArrayValue = [1, 2, 3]
         XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == [1, 2, 3])
