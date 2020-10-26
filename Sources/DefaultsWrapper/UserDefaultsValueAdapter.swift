@@ -98,11 +98,11 @@ class UserDefaultsRawRepresentableValueAdapter<Element: RawRepresentable>: UserD
 
 class UserDefaultsUserDefaultsConvertibleValueAdapter<Element: UserDefaultsConvertible>: UserDefaultsValueAdapter<Element> {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        SerializableAdapater.deserialize(from: defaults, withKey: key)
+        SerializableAdapter.deserialize(from: defaults, withKey: key)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        SerializableAdapater(value).serialize(in: defaults, withKey: key)
+        SerializableAdapter(value).serialize(in: defaults, withKey: key)
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
@@ -152,17 +152,17 @@ class UserDefaultsOptionalRawRepresentableValueAdapter<Element: OptionalType>: U
 
 class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        (SerializableAdapater.deserialize(from: defaults, withKey: key)).map(Element.wrap)
+        (SerializableAdapter.deserialize(from: defaults, withKey: key)).map(Element.wrap)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrapped.map { SerializableAdapater($0).serialize(in: defaults, withKey: key) }
+        value.wrapped.map { SerializableAdapter($0).serialize(in: defaults, withKey: key) }
         if value.wrapped == nil {
             defaults.removeObject(forKey: key)
         }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrapped.map { SerializableAdapater($0).register(in: defaults, withKey: key) }
+        defaultValue.wrapped.map { SerializableAdapter($0).register(in: defaults, withKey: key) }
     }
 }

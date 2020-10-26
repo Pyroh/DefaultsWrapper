@@ -58,7 +58,7 @@ protocol DefaultsDeserializable {
     static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> DeserializedType?
 }
 
-struct SerializableAdapater<Convertible: UserDefaultsConvertible>: DefaultsSerializable {
+struct SerializableAdapter<Convertible: UserDefaultsConvertible>: DefaultsSerializable {
     private let convertible: Convertible
     
     init(_ convertible: Convertible) {
@@ -74,7 +74,7 @@ struct SerializableAdapater<Convertible: UserDefaultsConvertible>: DefaultsSeria
     }
 }
 
-extension SerializableAdapater: DefaultsDeserializable {
+extension SerializableAdapter: DefaultsDeserializable {
     static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Convertible?  {
         (defaults.object(forKey: defaultName) as? Convertible.PropertyListSerializableType).flatMap(Convertible.instanciate(from: ))
     }
