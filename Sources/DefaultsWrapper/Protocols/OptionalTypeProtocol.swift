@@ -42,6 +42,12 @@ public protocol OptionalType {
     static func wrap(_ wrapping: Wrapped) -> Self
 }
 
+public extension OptionalType {
+    static func ??(_ lhs: Self, _ rhs: Self) -> Self {
+        lhs.wrapped == nil ? rhs : lhs
+    }
+}
+
 extension Optional: OptionalType {
     public var wrapped: Wrapped? { self }
     public static var `nil`: Optional<Wrapped> { nil }
