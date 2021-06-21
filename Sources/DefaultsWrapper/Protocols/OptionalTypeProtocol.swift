@@ -29,6 +29,7 @@
 ///     No other thing than `Optional` should conform to this protocol.
 /// - Note:
 ///     This `Optional` wrapper is a knockoff of [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults)\'s own `OptionalType`.
+
 public protocol OptionalType {
     associatedtype Wrapped
     

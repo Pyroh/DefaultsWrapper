@@ -29,16 +29,18 @@
 import Foundation
 
 class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
-    @Published var value: Element
+    @Published var value: Element 
     
     let key: String
     let defaultValue: Element
     let defaults: UserDefaults
+    let observeChanges: Bool
     
-    init(key: String, defaultValue: Element, defaults: UserDefaults, register: Bool) {
+    init(key: String, defaultValue: Element, defaults: UserDefaults, register: Bool, observeChanges: Bool = true) {
         self.key = key
         self.defaultValue = defaultValue
         self.defaults = defaults
+        self.observeChanges = observeChanges
         
         self.value = Self.readValue(forKey: key, from: defaults) ?? defaultValue
         
@@ -47,22 +49,28 @@ class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
         if register, !defaults.hasValue(forKey: key) {
             Self.registerDefaultValue(defaultValue, forKey: key, in: defaults)
         }
-        defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
+        
+        if observeChanges {
+            defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
+        }
     }
     
     deinit {
-        defaults.removeObserver(self, forKeyPath: key)
+        if observeChanges {
+            defaults.removeObserver(self, forKeyPath: key)
+        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard keyPath == key,
               let newValue = Self.readValue(forKey: key, from: defaults) else { return }
-        print(newValue)
+        
         value = newValue
     }
     
-    func setValue(_ value: Element) {
-        Self.writeValue(value, forKey: key, to: defaults)
+    func setValue(_ newValue: Element) {
+        Self.writeValue(newValue, forKey: key, to: defaults)
+        if !observeChanges { value = newValue }
     }
     
     class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
