@@ -19,6 +19,21 @@ class C {
 
 final class DefaultsWrapperTests: XCTestCase {
     
+    func testArrays() {
+        eraseDefaults()
+        
+        let arr = ArrayTestCase()
+        let d = UserDefaults.standard
+        
+        // Simple Value
+        arr.cgFloatArray = [1, 2]
+        XCTAssert(d.array(forKey: key(.cgFloatArray)) as? [Double] == [1, 2])
+        
+        // Complex Value
+        arr.cgPointArray = [CGPoint(x: 1, y: 2), CGPoint(x: 3, y: 4)]
+        XCTAssert(d.array(forKey: key(.cgPointArray)) as? [[String: Double]] == [["x": 1.0, "y": 2.0], ["x": 3.0, "y": 4.0]])
+    }
+    
     func testWrapper() {
         eraseDefaults()
         

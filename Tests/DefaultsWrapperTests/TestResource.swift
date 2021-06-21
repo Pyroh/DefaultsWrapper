@@ -70,6 +70,9 @@ extension UserDefaultsKeyName {
     static let optionalTransformValue: UserDefaultsKeyName = "optionalTransformValue"
     static let optionalNilTransformValue: UserDefaultsKeyName = "optionalNilTransformValue"
     
+    static let cgFloatArray: UserDefaultsKeyName = "cgFloatArray"
+    static let cgPointArray: UserDefaultsKeyName = "cgPointArray"
+    
     static var all: [UserDefaultsKeyName] { [
         .doubleValue,
         .optionalDoubleValue,
@@ -110,6 +113,9 @@ extension UserDefaultsKeyName {
         .transformValue,
         .optionalTransformValue,
         .optionalNilTransformValue,
+        
+        .cgFloatArray,
+        .cgPointArray,
         ]
     }
 }
@@ -218,6 +224,10 @@ class CGTestCase {
     var optionalNilTransformValue:  CGAffineTransform?
 }
 
+class ArrayTestCase {
+    @Defaults(.cgFloatArray) var cgFloatArray: [CGFloat] = []
+    @Defaults(.cgPointArray) var cgPointArray: [CGPoint] = []
+}
 
 enum Direction: Int, Codable {
     case north = 0
