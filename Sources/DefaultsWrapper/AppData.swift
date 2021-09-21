@@ -5,7 +5,7 @@
 //
 //  MIT License
 //
-//  Copyright (c) 2020 Pierre Tacchi
+//  Copyright (c) 2020-2021 Pierre Tacchi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -35,52 +35,49 @@ import SwiftUI
     }
     
     public var projectedValue: Binding<Element> {
-        .init { () -> Element in
-            adapter.value
-        } set: { (value) in
-            adapter.setValue(value)
-        }
+        .init { adapter.value }
+        set: { adapter.setValue($0) }
     }
     
-    @ObservedObject private var adapter: UserDefaultsValueAdapter<Element>
+    @StateObject private var adapter: UserDefaultsValueAdapter<Element>
     
     private init(adapter: UserDefaultsValueAdapter<Element>) {
-        self.adapter = adapter
+        self._adapter = .init(wrappedValue: adapter)
     }
 }
 
 public extension AppData where Element: PropertyListSerializable {
-    init(wrappedValue initialValue: Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
 public extension AppData where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
-    init(wrappedValue initialValue: Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
 public extension AppData where Element: UserDefaultsConvertible {
-    init(wrappedValue initialValue: Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
 public extension AppData where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
-    init(wrappedValue initialValue: Element = .nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
 public extension AppData where Element: OptionalType, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
-    init(wrappedValue initialValue: Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
 public extension AppData where Element: OptionalType, Element.Wrapped: UserDefaultsConvertible {
-    init(wrappedValue initialValue: Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }

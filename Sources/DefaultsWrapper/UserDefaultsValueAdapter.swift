@@ -5,7 +5,7 @@
 //
 //  MIT License
 //
-//  Copyright (c) 2020 Pierre Tacchi
+//  Copyright (c) 2020-2021 Pierre Tacchi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -27,27 +27,26 @@
 //
 
 import Foundation
+import Combine
 
 class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
     @Published var value: Element 
     
     let key: String
-    let defaultValue: Element
     let defaults: UserDefaults
     let observeChanges: Bool
     
-    init(key: String, defaultValue: Element, defaults: UserDefaults, register: Bool, observeChanges: Bool = true) {
+    init(key: String, defaultValue: @escaping () -> Element, defaults: UserDefaults, register: Bool, observeChanges: Bool = true) {
         self.key = key
-        self.defaultValue = defaultValue
         self.defaults = defaults
         self.observeChanges = observeChanges
         
-        self.value = Self.readValue(forKey: key, from: defaults) ?? defaultValue
+        self.value = Self.readValue(forKey: key, from: defaults) ?? defaultValue()
         
         super.init()
         
         if register, !defaults.hasValue(forKey: key) {
-            Self.registerDefaultValue(defaultValue, forKey: key, in: defaults)
+            Self.registerDefaultValue(defaultValue(), forKey: key, in: defaults)
         }
         
         if observeChanges {
@@ -88,7 +87,7 @@ class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
 
 // MARK: RawRepresentable
 
-class UserDefaultsRawRepresentableValueAdapter<Element: RawRepresentable>: UserDefaultsValueAdapter<Element> where Element.RawValue: PropertyListSerializable {
+final class UserDefaultsRawRepresentableValueAdapter<Element: RawRepresentable>: UserDefaultsValueAdapter<Element> where Element.RawValue: PropertyListSerializable {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         defaults.rawReprensentable(forKey: key)
     }
@@ -104,7 +103,7 @@ class UserDefaultsRawRepresentableValueAdapter<Element: RawRepresentable>: UserD
 
 // MARK: UserDefaultsConvertible
 
-class UserDefaultsUserDefaultsConvertibleValueAdapter<Element: UserDefaultsConvertible>: UserDefaultsValueAdapter<Element> {
+final class UserDefaultsUserDefaultsConvertibleValueAdapter<Element: UserDefaultsConvertible>: UserDefaultsValueAdapter<Element> {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         SerializableAdapter.deserialize(from: defaults, withKey: key)
     }
@@ -120,7 +119,7 @@ class UserDefaultsUserDefaultsConvertibleValueAdapter<Element: UserDefaultsConve
 
 // MARK: - Optionals
 
-class UserDefaultsOptionalValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> {
+final class UserDefaultsOptionalValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         defaults.object(forKey: key) as? Element
     }
@@ -139,7 +138,7 @@ class UserDefaultsOptionalValueAdapter<Element: OptionalType>: UserDefaultsValue
 
 // MARK: RawRepresentable
 
-class UserDefaultsOptionalRawRepresentableValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+final class UserDefaultsOptionalRawRepresentableValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         defaults.rawReprensentable(forKey: key).map(Element.wrap)
     }
@@ -158,7 +157,7 @@ class UserDefaultsOptionalRawRepresentableValueAdapter<Element: OptionalType>: U
 
 // MARK: UserDefaultsConvertible
 
-class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
+final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         (SerializableAdapter.deserialize(from: defaults, withKey: key)).map(Element.wrap)
     }
