@@ -1,5 +1,5 @@
 //
-//  Default.swift
+//  Defaults.swift
 //
 //  DefaultsWrapper
 //
