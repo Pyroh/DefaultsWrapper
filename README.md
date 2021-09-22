@@ -1,51 +1,49 @@
-[![Swift](https://img.shields.io/badge/Swift-5.1-orange.svg?style=flat)](https://swift.org)
-[![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20iOS%20%7C%20tvOS%20%7C%20watchOS-lightgrey.svg)](https://developer.apple.com/swift/)
+[![Swift](https://img.shields.io/badge/Swift-5.5-orange.svg?style=flat)](https://swift.org)
+[![Platforms](https://img.shields.io/badge/platform-macOS%2011%20%7C%20iOS%2014%20%7C%20tvOS%2014%20%7C%20watchOS%207-lightgrey.svg)](https://developer.apple.com/swift/)
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-green.svg?style=flat)](https://swift.org/package-manager/)
 [![License](https://img.shields.io/badge/license-MIT-71787A.svg)](https://tldrlegal.com/license/mit-license)
 
 # DefaultsWrapper
 
-**DefaultsWrapper** is another property wrapper for `UserDefaults`, you write it `@Defaults`. Why is it more interesting than any other property wrapper for `UserDefaults` ?
+DefaultsWrapper is a collection of property wrappers for `UserDefaults`.  
+
+Why is it more interesting than any other property wrapper for `UserDefaults` ?
 
 1. It's new
 1. It supports any type that `UserDefaults` already supports 
 1. It's type-safe
 1. It adds support for `enum`'s _out-of-the-box_*
 1. It provides support for `Encodable` types**
+1. It has propety wrappers that bring these marvelous features to SwiftUI 
 1. It can be used with the popular `CoreGraphics` value types 
 1. It can be used with optional and non-optional values
-1. It automatically registers the default value in the user's defaults database
+1. It automatically registers the default value in the user defaults database
 1. It also may not be that interesting at all...
 
 By the way it's as easy to use as any other property wrapper :
 
-```Swift
+```swift
 import DefaultsWrapper
 
 struct Game {
-    @Defaults(key: "NumberOfPlayers", defaultValue: 3)
-    var playerCount: Int
-    
-    @Defaults(key: "StartingPosition", defaultValue: .zero)
-    var startPos: CGPoint
-    
-    @Defaults(key: "HighScore")
-    var highscore: Double?
+    @Defaults("NumberOfPlayers") var playerCount: Int = 3
+    @Preference("PlayerName") var playerName: String = "Red"
+    @SavedState("StartingPosition") var startPos: CGPoint = .zero
 }
 ```
 
 As it is easy to make mistake using string literal keys **DefaultsWrapper** also introduces a `UserDefaultsKeyName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What could be considered as a best practice is to declare all keys at once inside a `UserDefaultsKeyName` extension :
 
-```Swift
+```swift
 extension UserDefaultsKeyName {
-    static let numberOfPlayers: UserDefaultsKeyName = "NumberOfPlayers"
-    static let startingPosition: UserDefaultsKeyName = "StartingPosition"
-    static let highScore: UserDefaultsKeyName = "HighScore"
+    static var numberOfPlayers: UserDefaultsKeyName { "NumberOfPlayers" }
+    static var playerName: UserDefaultsKeyName { "PlayerName" }
+    static var startingPosition: UserDefaultsKeyName { "StartingPosition" }
 }
-
 struct Game {
-    @Defaults(key: .numberOfPlayers, defaultValue: 3)
-    var playerCount: Int
+    @Defaults(.numberOfPlayers) var playerCount: Int = 3
+    @Preference(.playerName) var playerName: String = "Red"
+    @SavedState(.startingPosition) var position: CGPoint = .zero
     ...
 }
 ```
@@ -55,13 +53,25 @@ But you still can conveniently use string literals.
 _*Conditions may apply._ [See here](#enum-values-support).  
 _**The target type should conform to `UserDefaultsCodable` rather than `Codable`._ [See here](#Support-for-Codable-types)
 
+## ✨ What's new in 2.0 ? ✨
+**DefaultsWrapper** 2.0 brings two know property wrappers you will use with SwiftUI : 
+- `Preference`. A replacement for `AppStorage` but as convenient and as adaptable as `Default`.
+- `SavedState`. Works like `State` but the last value set is written to `UserDefaults`. This value is then read every time a new `SavedState` bound to the same key comes to life and becomes the actual value. 
+
+
+It features a conformance to `Codable` for `Published`. It means that your `ObservableObject` types can now conform to `UserDefaultsCodable` ! (Or just `Codable`). 
+
+A brand new documentation thanks to Apple's DocC you can generate directly. It will be made available on another form later this year.
+
+There's also some bug fixes and minor improvements.
+
 ## Requirements
 
-- Swift 5.1+
-- macOS 10.10+
-- iOS 8+
-- tvOS 9+
-- watchOS 2+
+- Swift 5.5+
+- macOS 11+
+- iOS 14+
+- tvOS 14+
+- watchOS 7+
 
 ## Installation
 
@@ -71,7 +81,7 @@ As a Swift Package you can add **DefaultsWrapper** as a dependency in your proje
 dependencies: [
 // Dependencies declare other packages that this package depends on.
 ...
-    .package(url: "https://github.com/Pyroh/DefaultsWrapper", .upToNextMajor(from: "1.0.0")),
+    .package(url: "https://github.com/Pyroh/DefaultsWrapper", .upToNextMajor(from: "2.0.0")),
 ...
 ],
 ```
@@ -188,7 +198,7 @@ You cant use these `CoreGraphics` value types directly with `@Defaults` :
 For your convenience these types are not converted to a `Data` blob but to a human-readable `Dictionary`. Sometimes you may need to tweak the defaults by hand using the command line, it will remain possilble to modify the `width` property of the `size` property of `RectangularThing`. As `RectangularThing` is a `CGRect` and every CG type is encoded to a `Dictionary` which keys are the same that the corresponding type's property names.  
 
 > **Please note that** :
-> - `CGFloat` is converted to a simple `Double` value.
+> - `CGFloat` is simply converted to a `Double` value.
 > - `CGAffineTransform` is converted to an array of `Double` following this order: `a`, `b`, `c`, `d`, `tx` and `ty`.
 
 ### Using your own types
@@ -255,7 +265,7 @@ extension SIMD2: UserDefaultsConvertible where Scalar: PropertyListSerializable 
 ```
 
 ## `UserDefaults` extension
-An `UserDefault` extension is also publicly accessible in **DefaultsWrapper** and allows any `UserDefaults` instance to support as much types as `@Defaults`.  
+An `UserDefault` extension is also publicly accessible in **DefaultsWrapper** and allows any `UserDefaults` instance to support as much types as `@Defaults`, `@Preference` or `@SavedState`.  
 You can store any supported value using the `set` method, to retrieve values here are the methods (names are self-explenatory) :
 
 ```Swift
@@ -275,7 +285,7 @@ There is also a `register` method that allows to register only one object instea
 
 ## License
 
-> Copyright (c) 2020 Pierre Tacchi
+> Copyright (c) 2020-2021 Pierre Tacchi
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

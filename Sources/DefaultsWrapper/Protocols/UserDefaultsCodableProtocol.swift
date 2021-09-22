@@ -28,11 +28,11 @@
 import Foundation
 
 
-/// A type that conforms both to `Codable` and `UserDefaultsConvertible`.
+/// A type that conforms to both `Codable` and ``UserDefaultsConvertible``.
 ///
-/// A default implementation is provided for all `UserDefaultsConvertible` methods.
+/// A default implementation is provided for all ``UserDefaultsConvertible`` methods.
 ///
-/// Make your `Codable` types conform to `UserDefaultsCodable` today and get user defaults serialization for free 🎁.
+/// Make your `Codable` types conform to `UserDefaultsCodable` today and get `UserDefaults` serialization for free 🎁.
 public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
 
 extension UserDefaultsCodable {

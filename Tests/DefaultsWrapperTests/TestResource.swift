@@ -121,32 +121,32 @@ extension UserDefaultsKeyName {
 }
 
 class TestCase {
-    @Defaults(key: .doubleValue, defaultValue: 42)
-    var doubleValue: Double
-    @Defaults(key: .optionalDoubleValue, defaultValue: 42)
-    var optionalDoubleValue: Double?
-    @Defaults(key: .optionalNilDoubleValue)
+    @Defaults(.doubleValue)
+    var doubleValue: Double = 42
+    @Defaults(.optionalDoubleValue)
+    var optionalDoubleValue: Double? = 42
+    @Defaults(.optionalNilDoubleValue)
     var optionalNilDoubleValue: Double?
     
-    @Defaults(key: .enumValue, defaultValue: .north)
-    var enumValue: Direction
-    @Defaults(key: .optionalEnumValue, defaultValue: .north)
-    var optionalEnumValue: Direction?
-    @Defaults(key: .optionalNilEnumValue)
+    @Defaults(.enumValue)
+    var enumValue: Direction = .north
+    @Defaults(.optionalEnumValue)
+    var optionalEnumValue: Direction? = .north
+    @Defaults(.optionalNilEnumValue)
     var optionalNilEnumValue: Direction?
     
-    @Defaults(key: .codableValue, defaultValue: CodableStruct())
-    var codableValue: CodableStruct
-    @Defaults(key: .optionalcodableValue, defaultValue: CodableStruct())
-    var optionalcodableValue: CodableStruct?
-    @Defaults(key: .optionalNilcodableValue)
+    @Defaults(.codableValue)
+    var codableValue: CodableStruct = CodableStruct()
+    @Defaults(.optionalcodableValue)
+    var optionalcodableValue: CodableStruct? = CodableStruct()
+    @Defaults(.optionalNilcodableValue)
     var optionalNilcodableValue: CodableStruct?
     
-    @Defaults(key: .arrayValue, defaultValue: [1, 2, 3])
-    var arrayValue: [Int]
-    @Defaults(key: .optionalArrayValue, defaultValue: [1, 2, 3])
-    var optionalArrayValue: [Int]?
-    @Defaults(key: .optionalNilArrayValue)
+    @Defaults(.arrayValue)
+    var arrayValue: [Int] = [1, 2, 3]
+    @Defaults(.optionalArrayValue)
+    var optionalArrayValue: [Int]? = [1, 2, 3]
+    @Defaults(.optionalNilArrayValue)
     var optionalNilArrayValue: [Int]?
 }
 
@@ -181,46 +181,46 @@ class WrappedTestCase {
 }
 
 class CGTestCase {
-    @Defaults(key: .floatValue, defaultValue: .zero)
-    var floatValue: CGFloat
-    @Defaults(key: .optionalFloatValue, defaultValue: .zero)
-    var optionalFloatValue: CGFloat?
-    @Defaults(key: .optionalNilFloatValue)
+    @Defaults(.floatValue)
+    var floatValue: CGFloat = .zero
+    @Defaults(.optionalFloatValue)
+    var optionalFloatValue: CGFloat? = .zero
+    @Defaults(.optionalNilFloatValue)
     var optionalNilFloatValue: CGFloat?
     
-    @Defaults(key: .pointValue, defaultValue: .zero)
-    var pointValue: CGPoint
-    @Defaults(key: .optionalPointValue, defaultValue: .zero)
-    var optionalPointValue: CGPoint?
-    @Defaults(key: .optionalNilPointValue)
+    @Defaults(.pointValue)
+    var pointValue: CGPoint = .zero
+    @Defaults(.optionalPointValue)
+    var optionalPointValue: CGPoint? = .zero
+    @Defaults(.optionalNilPointValue)
     var optionalNilPointValue: CGPoint?
     
-    @Defaults(key: .sizeValue, defaultValue: .zero)
-    var sizeValue: CGSize
-    @Defaults(key: .optionalSizeValue, defaultValue: .zero)
-    var optionalSizeValue: CGSize?
-    @Defaults(key: .optionalNilSizeValue)
+    @Defaults(.sizeValue)
+    var sizeValue: CGSize = .zero
+    @Defaults(.optionalSizeValue)
+    var optionalSizeValue: CGSize? = .zero
+    @Defaults(.optionalNilSizeValue)
     var optionalNilSizeValue: CGSize?
     
-    @Defaults(key: .rectValue, defaultValue: .zero)
-    var rectValue: CGRect
-    @Defaults(key: .optionalRectValue, defaultValue: .zero)
-    var optionalRectValue: CGRect?
-    @Defaults(key: .optionalNilRectValue)
+    @Defaults(.rectValue)
+    var rectValue: CGRect = .zero
+    @Defaults(.optionalRectValue)
+    var optionalRectValue: CGRect? = .zero
+    @Defaults(.optionalNilRectValue)
     var optionalNilRectValue: CGRect?
     
-    @Defaults(key: .vectorValue, defaultValue: .zero)
-    var vectorValue: CGVector
-    @Defaults(key: .optionalVectorValue, defaultValue: .zero)
-    var optionalVectorValue: CGVector?
-    @Defaults(key: .optionalNilVectorValue)
+    @Defaults(.vectorValue)
+    var vectorValue: CGVector = .zero
+    @Defaults(.optionalVectorValue)
+    var optionalVectorValue: CGVector? = .zero
+    @Defaults(.optionalNilVectorValue)
     var optionalNilVectorValue: CGVector?
     
-    @Defaults(key: .transformValue, defaultValue: .identity)
-    var transformValue: CGAffineTransform
-    @Defaults(key: .optionalTransformValue, defaultValue: .identity)
-    var optionalTransformValue: CGAffineTransform?
-    @Defaults(key: .optionalNilTransformValue)
+    @Defaults(.transformValue)
+    var transformValue: CGAffineTransform = .identity
+    @Defaults(.optionalTransformValue)
+    var optionalTransformValue: CGAffineTransform? = .identity
+    @Defaults(.optionalNilTransformValue)
     var optionalNilTransformValue:  CGAffineTransform?
 }
 

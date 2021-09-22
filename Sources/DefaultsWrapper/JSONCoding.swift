@@ -31,9 +31,7 @@ enum JSONCoding {
     
     /// Encodes any `Encodable` object to JSON and returns the corresponding JSON utf8 string as a `Data` object.
     ///
-    /// - Attention:
-    ///     This method will stop execution if the `value` encoding fails.
-    ///     `Encodable` type failing to encode is a serious issue and must be handled at design time.
+    /// - Attention: This method will stop execution if the `value` encoding fails. `Encodable` type failing to encode is a serious issue and must be handled at design time.
     ///
     /// - Parameter value: The object to encode.
     static func data<T: Encodable>(from value: T) -> Data {

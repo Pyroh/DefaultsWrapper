@@ -2,16 +2,16 @@ import XCTest
 import DefaultsWrapper
 
 struct S {
-    @Defaults(key: "someKey", defaultValue: "Hello")
-    var someValue: String
+    @Defaults("someKey")
+    var someValue: String = "Hello"
 
     @Defaults("otherKey")
     var otherValue: String = "Hello world !"
 }
 
 class C {
-    @Defaults(key: "someKey", defaultValue: "World")
-    var someValue: String
+    @Defaults("someKey")
+    var someValue: String = "World"
 
     @Defaults("otherKey")
     var otherValue: String = "Hello world !"

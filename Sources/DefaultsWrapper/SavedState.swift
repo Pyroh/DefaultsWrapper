@@ -28,13 +28,18 @@
 
 import SwiftUI
 
-/// A property wrapper type that can read and write a value managed by SwiftUI. The initial value is read from `UserDefaults` using the given key and each subsequent value is written to it. The view is not invalidated on changes made directly or indirectly to `UserDefaults`.
+/// A property wrapper type that can read and write a value managed by SwiftUI and persisted to `UserDefaults`.
+///
+/// The initial value is read from `UserDefaults` using the given key and each subsequent value is written to it. The view is not invalidated on changes made directly or indirectly to `UserDefaults`.
 @propertyWrapper public struct SavedState<Element>: DynamicProperty {
+    
+    /// The underlying value.
     public var wrappedValue: Element {
         get { adapter.value }
         nonmutating set { adapter.setValue(newValue) }
     }
     
+    /// A binding to the value.
     public var projectedValue: Binding<Element> {
         .init { adapter.value }
         set: { adapter.setValue($0) }
@@ -49,7 +54,7 @@ import SwiftUI
 
 public extension SavedState where Element: PropertyListSerializable {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -62,7 +67,7 @@ public extension SavedState where Element: PropertyListSerializable {
 }
 
 public extension SavedState where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
-    /// Creates a dymanic user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a dymanic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -76,7 +81,7 @@ public extension SavedState where Element: RawRepresentable, Element.RawValue: P
 
 public extension SavedState where Element: UserDefaultsConvertible {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -90,7 +95,7 @@ public extension SavedState where Element: UserDefaultsConvertible {
 
 public extension SavedState where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -107,7 +112,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: Propert
 
 public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     
-    /// Creates dynamic a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates dynamic a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -124,7 +129,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepr
 
 public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     
-    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
+    /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.

@@ -24,29 +24,48 @@
 //  SOFTWARE.
 //
 
+/// Keeps compatibility with previous versions.
 @available(*, deprecated, renamed: "UserDefaultsKeyName")
 public typealias DefaultName = UserDefaultsKeyName
 
-/// A `UserDefaultsKeyName` key.
+/// A `UserDefaults` key.
 ///
 /// Since `UserDefaultsKeyName` conforms to `ExpressibleByStringLiteral` a string literal can be used where a `UserDefaultsKeyName` is expected.
 ///
 /// It means that if there's such a function :
-/// ```Swift
+/// ```swift
 /// func ImInNeedOfA(defaultName key: UserDefaultsKeyName) {
 ///     print(key)
 /// }
 /// ```
 /// this code :
-/// ```
+/// ```swift
 /// let somePropertyKey: DefaultName = "somePropertyKey"
 /// ImInNeedOfA(defaultName: somePropertyKey)
 /// ```
 /// and this code :
-/// ```
+/// ```swift
 /// ImInNeedOfA(defaultName: "somePropertyKey")
 /// ```
 /// will produce the same result.
+///
+/// ## Best practice
+/// To avoid confusion when using strings as identifier it's best to extend `UserDefaultsKeyName`. You can then declare the keys as you add static properties to `UserDefaultsKeyName`.
+///
+/// ```swift
+/// extension UserDefaultsKeyName {
+///     static var numberOfPlayers: UserDefaultsKeyName { "NumberOfPlayers" }
+///     static var playerName: UserDefaultsKeyName { "PlayerName" }
+///     static var startingPosition: UserDefaultsKeyName { "StartingPosition" }
+/// }
+///
+/// struct Game {
+///     @Defaults(.numberOfPlayers) var playerCount: Int = 3
+///     @Defaults(.playerName) var playerCount: String = "Red"
+///     @SavedState(.startingPosition) var position: CGPoint = .zero
+///     ...
+/// }
+/// ```
 public struct UserDefaultsKeyName: RawRepresentable, ExpressibleByStringLiteral, CustomStringConvertible {
     public var rawValue: String
     public var description: String { self.rawValue }
@@ -60,3 +79,8 @@ public struct UserDefaultsKeyName: RawRepresentable, ExpressibleByStringLiteral,
     }
 }
 
+extension UserDefaultsKeyName: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
+}

@@ -27,7 +27,10 @@
 
 import Foundation
 
+/// A type that can be serialized/deserialized to/from `UserDefaults`.
 public protocol UserDefaultsConvertible {
+    
+    /// The type the receiver will serialize to and deserialize from.
     associatedtype PropertyListSerializableType: PropertyListSerializable
     
     /// Converts `self` to a serializable type.

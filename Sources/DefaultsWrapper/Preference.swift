@@ -29,14 +29,18 @@
 #if !os(Linux)
 import SwiftUI
 
-/// A property wrapper type that reflects a value from `UserDefaults` and invalidates a view on a change in value in that user default.
-/// - Note: `Preference` is like `AppStorage` but supports all types `Defaults` supports.
+/// A property wrapper type that reflects a value from `UserDefaults` and invalidates the view when value in that user default changes.
+///
+/// ``Preference`` is like `AppStorage` but supports all types ``Defaults`` supports.
 @propertyWrapper public struct Preference<Element>: DynamicProperty {
+    
+    /// The underlying value.
     public var wrappedValue: Element {
         get { adapter.value }
         nonmutating set { adapter.setValue(newValue) }
     }
     
+    /// A binding to the value.
     public var projectedValue: Binding<Element> {
         .init { adapter.value }
         set: { adapter.setValue($0) }
@@ -51,7 +55,7 @@ import SwiftUI
 
 public extension Preference where Element: PropertyListSerializable {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -65,7 +69,7 @@ public extension Preference where Element: PropertyListSerializable {
 
 public extension Preference where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
     
-    /// Creates a dymanic user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a dymanic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -79,7 +83,7 @@ public extension Preference where Element: RawRepresentable, Element.RawValue: P
 
 public extension Preference where Element: UserDefaultsConvertible {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -93,7 +97,7 @@ public extension Preference where Element: UserDefaultsConvertible {
 
 public extension Preference where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
     
-    /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -110,7 +114,7 @@ public extension Preference where Element: AnyOptional, Element.Wrapped: Propert
 
 public extension Preference where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     
-    /// Creates dynamic a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates dynamic a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -127,7 +131,7 @@ public extension Preference where Element: AnyOptional, Element.Wrapped: RawRepr
 
 public extension Preference where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     
-    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
+    /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.

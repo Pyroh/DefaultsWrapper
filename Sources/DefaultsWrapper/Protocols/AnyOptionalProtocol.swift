@@ -25,12 +25,15 @@
 //
 
 /// An `Optional` abstraction that can be conveniently used as a generic constraint.
-/// - Warning:
-///     No other thing than `Optional` should conform to this protocol.
-/// - Note:
-///     This `Optional` wrapper is a knockoff of [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults)\'s own `OptionalType`.
+///
+/// This `Optional` wrapper is a knockoff of [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults)\'s `OptionalType`.
+///
+/// - Note: `Optional` conforms to this protocol.
+/// - Remark: No type other than `Optional` should conform to this protocol.
+///
 
 public protocol AnyOptional {
+    /// The type of the wrapped subject.
     associatedtype Wrapped
     
     /// The concrete optional type of the instance.
@@ -45,9 +48,9 @@ public protocol AnyOptional {
 
 extension Optional: AnyOptional {
     public var wrappedValue: Wrapped? { self }
-    public static var nilValue: Optional<Wrapped> { nil }
+    public static var nilValue: Self { nil }
 
-    public static func wrapValue(_ wrapping: Wrapped) -> Optional<Wrapped> {
+    public static func wrapValue(_ wrapping: Wrapped) -> Self {
         Self(wrapping)
     }
 }

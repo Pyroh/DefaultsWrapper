@@ -26,9 +26,20 @@
 
 import Foundation
 
-/// Used to mark a type that conforms to it as serializable in a property list.
-/// - Remark:
-///     You shouldn't conform your own types or any other type to this protocol.
+/// A protocol types that are natively supported by `UserDefaults` conform to.
+///
+/// Comforming types :
+/// - `Int`
+/// - `Double`
+/// - `Float`
+/// - `Bool`
+/// - `String`
+/// - `Data`
+/// - `Date`
+/// - `URL`
+/// - `Array` is supported if its `Element` required type itself conforms to ``PropertyListSerializable``.
+/// - `Dictionnary` is supported too if its `Key` is in fact `String` and if its `Value` required type conforms to ``PropertyListSerializable`.
+/// - Important: You shouldn't conform your own types or any other type to this protocol. Unless this documentation says otherwise...
 public protocol PropertyListSerializable { }
 
 extension Int: PropertyListSerializable { }
