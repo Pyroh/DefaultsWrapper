@@ -48,7 +48,7 @@ import SwiftUI
 
 public extension AppData where Element: PropertyListSerializable {
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
+        self.init(adapter: UserDefaultsValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
@@ -64,19 +64,19 @@ public extension AppData where Element: UserDefaultsConvertible {
     }
 }
 
-public extension AppData where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
-    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+public extension AppData where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension AppData where Element: OptionalType, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+public extension AppData where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension AppData where Element: OptionalType, Element.Wrapped: UserDefaultsConvertible {
+public extension AppData where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }

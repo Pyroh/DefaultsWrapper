@@ -65,19 +65,19 @@ public extension SavedState where Element: UserDefaultsConvertible {
 }
 
 @available(macOS 11.0, *)
-public extension SavedState where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
-    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+public extension SavedState where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
 
-public extension SavedState where Element: OptionalType, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
 
-public extension SavedState where Element: OptionalType, Element.Wrapped: UserDefaultsConvertible {
+public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }

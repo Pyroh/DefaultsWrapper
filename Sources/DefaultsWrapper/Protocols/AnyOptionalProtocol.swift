@@ -30,30 +30,25 @@
 /// - Note:
 ///     This `Optional` wrapper is a knockoff of [SwiftyUserDefaults](https://github.com/sunshinejr/SwiftyUserDefaults)\'s own `OptionalType`.
 
-public protocol OptionalType {
+public protocol AnyOptional {
     associatedtype Wrapped
     
     /// The concrete optional type of the instance.
-    var wrapped: Wrapped? { get }
+    var wrappedValue: Wrapped? { get }
     
     /// `nil` when you can't use `nil`.
-    static var `nil`: Self { get }
+    static var nilValue: Self { get }
     
     /// Wraps the given instance in a corresponding optional.
-    static func wrap(_ wrapping: Wrapped) -> Self
+    static func wrapValue(_ wrapping: Wrapped) -> Self
 }
 
-public extension OptionalType {
-    static func ??(_ lhs: Self, _ rhs: Self) -> Self {
-        lhs.wrapped == nil ? rhs : lhs
-    }
-}
+extension Optional: AnyOptional {
+    public var wrappedValue: Wrapped? { self }
+    public static var nilValue: Optional<Wrapped> { nil }
 
-extension Optional: OptionalType {
-    public var wrapped: Wrapped? { self }
-    public static var `nil`: Optional<Wrapped> { nil }
-
-    public static func wrap(_ wrapping: Wrapped) -> Optional<Wrapped> {
+    public static func wrapValue(_ wrapping: Wrapped) -> Optional<Wrapped> {
         Self(wrapping)
     }
 }
+
