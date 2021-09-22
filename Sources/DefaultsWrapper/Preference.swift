@@ -1,5 +1,5 @@
 //
-//  SavedState.swift
+//  AppData.swift
 //
 //  DefaultsWrapper
 //
@@ -26,10 +26,12 @@
 //  SOFTWARE.
 //
 
+#if !os(Linux)
 import SwiftUI
 
-/// A property wrapper type that can read and write a value managed by SwiftUI. The initial value is read from `UserDefaults` using the given key and each subsequent value is written to it. The view is not invalidated on changes made directly or indirectly to `UserDefaults`.
-@propertyWrapper public struct SavedState<Element>: DynamicProperty {
+/// A property wrapper type that reflects a value from `UserDefaults` and invalidates a view on a change in value in that user default.
+/// - Note: `Preference` is like `AppStorage` but supports all types `Defaults` supports.
+@propertyWrapper public struct Preference<Element>: DynamicProperty {
     public var wrappedValue: Element {
         get { adapter.value }
         nonmutating set { adapter.setValue(newValue) }
@@ -47,7 +49,7 @@ import SwiftUI
     }
 }
 
-public extension SavedState where Element: PropertyListSerializable {
+public extension Preference where Element: PropertyListSerializable {
     
     /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
@@ -57,11 +59,12 @@ public extension SavedState where Element: PropertyListSerializable {
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension SavedState where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
+public extension Preference where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
+    
     /// Creates a dymanic user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
@@ -70,11 +73,11 @@ public extension SavedState where Element: RawRepresentable, Element.RawValue: P
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension SavedState where Element: UserDefaultsConvertible {
+public extension Preference where Element: UserDefaultsConvertible {
     
     /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
@@ -84,11 +87,11 @@ public extension SavedState where Element: UserDefaultsConvertible {
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension SavedState where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
+public extension Preference where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
     
     /// Creates a dynamic user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
@@ -101,11 +104,11 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: Propert
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsOptionalValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsOptionalValueAdapter<Element>(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+public extension Preference where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     
     /// Creates dynamic a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
@@ -118,11 +121,11 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepr
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
 
-public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
+public extension Preference where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     
     /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
@@ -135,6 +138,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDef
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
-        self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+        self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue))
     }
 }
+#endif

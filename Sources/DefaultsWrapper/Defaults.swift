@@ -3,7 +3,7 @@
 //
 //  DefaultsWrapper
 //
-//  Copyright (c) 2020 Pierre Tacchi
+//  Copyright (c) 2020-2021 Pierre Tacchi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ public typealias Default = Defaults
 // MARK: PropertyListSerializable
 public extension Defaults where Element: PropertyListSerializable {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -78,7 +78,7 @@ public extension Defaults where Element: PropertyListSerializable {
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -99,7 +99,7 @@ public extension Defaults where Element: PropertyListSerializable {
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
+    /// Creates a users defaults wrapper associated with the given key which wrapped type conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -124,7 +124,7 @@ public extension Defaults where Element: PropertyListSerializable {
 
 public extension Defaults where Element: RawRepresentable, Element.RawValue: PropertyListSerializable {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -145,7 +145,7 @@ public extension Defaults where Element: RawRepresentable, Element.RawValue: Pro
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -166,7 +166,7 @@ public extension Defaults where Element: RawRepresentable, Element.RawValue: Pro
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -191,7 +191,7 @@ public extension Defaults where Element: RawRepresentable, Element.RawValue: Pro
 
 public extension Defaults where Element: UserDefaultsConvertible {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -212,7 +212,7 @@ public extension Defaults where Element: UserDefaultsConvertible {
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -233,7 +233,7 @@ public extension Defaults where Element: UserDefaultsConvertible {
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type conforms to `UserDefaultsConvertible`.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -259,7 +259,7 @@ public extension Defaults where Element: UserDefaultsConvertible {
 
 public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -317,7 +317,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -349,7 +349,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
 
 public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -378,7 +378,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -407,7 +407,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -439,7 +439,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
 // MARK: UserDefaultsConvertible
 public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
     
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -468,7 +468,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
@@ -497,7 +497,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
         }
     }
 
-    /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsSerializable`.
+    /// Creates a user defaults wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
     /// - Note:
     ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.

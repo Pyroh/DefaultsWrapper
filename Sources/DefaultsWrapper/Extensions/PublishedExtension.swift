@@ -1,5 +1,5 @@
 //
-//  ArrayExtension.swift
+//  PublishedExtension.swift
 //
 //  DefaultsWrapper
 //
@@ -26,15 +26,21 @@
 //  SOFTWARE.
 //
 
-import Foundation
+#if !os(Linux)
+import Combine
 
-extension Array: UserDefaultsConvertible where Element: UserDefaultsConvertible {
-    public func convertedObject() -> some PropertyListSerializable {
-        map { $0.convertedObject() }
-    }
-    
-    public static func instanciate(from object: PropertyListSerializableType) -> Array<Element>? {
-        guard let array = object as? [Element.PropertyListSerializableType] else { return nil }
-        return array.compactMap(Element.instanciate(from:))
+extension Published: Encodable where Value: Encodable {
+    public func encode(to encoder: Encoder) throws {
+        // `projectedValue` is marked `mutating` but `self` is immutable.
+        // So we create a mutable copy of `self.
+        var mutableProxy = self
+        _ = mutableProxy.projectedValue.sink { try? $0.encode(to: encoder) }
     }
 }
+
+extension Published: Decodable where Value: Decodable {
+    public init(from decoder: Decoder) throws {
+        self = Self.init(initialValue: try .init(from: decoder))
+    }
+}
+#endif

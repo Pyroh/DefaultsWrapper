@@ -26,6 +26,7 @@
 //  SOFTWARE.
 //
 
+#if !os(Linux)
 import Foundation
 import Combine
 
@@ -173,3 +174,4 @@ final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: Any
         defaultValue.wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: key) }
     }
 }
+#endif
