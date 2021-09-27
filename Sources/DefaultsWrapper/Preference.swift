@@ -48,8 +48,8 @@ import SwiftUI
     
     @StateObject private var adapter: UserDefaultsValueAdapter<Element>
     
-    private init(adapter: UserDefaultsValueAdapter<Element>) {
-        self._adapter = .init(wrappedValue: adapter)
+    private init(adapter: @autoclosure @escaping () -> UserDefaultsValueAdapter<Element>) {
+        self._adapter = .init(wrappedValue: adapter())
     }
 }
 

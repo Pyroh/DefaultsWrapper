@@ -27,8 +27,6 @@
 
 import Foundation
 
-typealias UserDefault = UserDefaults
-
 /// Keeps compatibility with previous versions.
 @available(*, deprecated, renamed: "Defaults")
 public typealias Default = Defaults
