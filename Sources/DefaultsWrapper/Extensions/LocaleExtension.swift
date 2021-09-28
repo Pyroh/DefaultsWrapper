@@ -1,7 +1,9 @@
 //
-//  UserDefaultsCodableProtocol.swift
+//  LocaleExtension.swift
 //
 //  DefaultsWrapper
+//
+//  MIT License
 //
 //  Copyright (c) 2020-2021 Pierre Tacchi
 //
@@ -24,25 +26,6 @@
 //  SOFTWARE.
 //
 
-
 import Foundation
 
-
-/// A type that conforms to both `Codable` and ``UserDefaultsConvertible``.
-///
-/// A default implementation is provided for all ``UserDefaultsConvertible`` methods.
-///
-/// Make your `Codable` types conform to `UserDefaultsCodable` today and get `UserDefaults` serialization for free 🎁.
-public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
-
-extension UserDefaultsCodable {
-    public func convertedObject() -> Data {
-        JSONCoding.data(from: self)
-    }
-    
-    public static func instanciate(from object: Data) -> Self? {
-        JSONCoding.object(from: object)
-    }
-}
-
-protocol _UserDefaultsCodable: UserDefaultsCodable { }
+extension Locale: _UserDefaultsCodable { }

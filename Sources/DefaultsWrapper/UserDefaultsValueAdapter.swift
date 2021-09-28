@@ -35,12 +35,12 @@ class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
     
     let key: String
     let defaults: UserDefaults
-    let observeChanges: Bool
+    let observesChanges: Bool
     
     init(key: String, defaultValue: @escaping () -> Element, defaults: UserDefaults, register: Bool, observeChanges: Bool = true) {
         self.key = key
         self.defaults = defaults
-        self.observeChanges = observeChanges
+        self.observesChanges = observeChanges
         
         self.value = Self.readValue(forKey: key, from: defaults) ?? defaultValue()
         
@@ -56,7 +56,7 @@ class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
     }
     
     deinit {
-        if observeChanges {
+        if observesChanges {
             defaults.removeObserver(self, forKeyPath: key)
         }
     }
@@ -70,7 +70,7 @@ class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
     
     func setValue(_ newValue: Element) {
         Self.writeValue(newValue, forKey: key, to: defaults)
-        if !observeChanges { value = newValue }
+        if !observesChanges { value = newValue }
     }
     
     class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {

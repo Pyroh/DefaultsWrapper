@@ -73,6 +73,10 @@ extension UserDefaultsKeyName {
     static let cgFloatArray: UserDefaultsKeyName = "cgFloatArray"
     static let cgPointArray: UserDefaultsKeyName = "cgPointArray"
     
+    static let decimalValue: UserDefaultsKeyName = "decimalValue"
+    static let uuidValue: UserDefaultsKeyName = "uuidValue"
+    static let localeValue: UserDefaultsKeyName = "localeValue"
+    
     static var all: [UserDefaultsKeyName] { [
         .doubleValue,
         .optionalDoubleValue,
@@ -116,6 +120,10 @@ extension UserDefaultsKeyName {
         
         .cgFloatArray,
         .cgPointArray,
+        
+        .decimalValue,
+        .uuidValue,
+        .localeValue
         ]
     }
 }
@@ -222,6 +230,17 @@ class CGTestCase {
     var optionalTransformValue: CGAffineTransform? = .identity
     @Defaults(.optionalNilTransformValue)
     var optionalNilTransformValue:  CGAffineTransform?
+}
+
+class FoundationTestCase {
+    @Defaults(.decimalValue)
+    var decimalValue: Decimal = .zero
+    
+    @Defaults(.uuidValue)
+    var uuidValue: UUID = .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    
+    @Defaults(.localeValue)
+    var localValue: Locale = .current
 }
 
 class ArrayTestCase {

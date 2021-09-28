@@ -180,6 +180,23 @@ final class DefaultsWrapperTests: XCTestCase {
         XCTAssert(d.array(forKey: key(.optionalNilArrayValue)) as? [Int] == nil)
     }
     
+    func testWrapperWithFoundationTypes() {
+        eraseDefaults()
+        
+        let fnd = FoundationTestCase()
+        let d = UserDefaults.standard
+        
+        fnd.decimalValue = 42
+        XCTAssert(d.decimal(forKey: key(.decimalValue)) == Decimal(42))
+        
+        let uuid = UUID()
+        fnd.uuidValue = uuid
+        XCTAssert(d.uuid(forKey: key(.uuidValue)) == uuid)
+        
+        let locale = Locale(identifier: "eu")
+        fnd.localValue = locale
+        XCTAssert(d.locale(forKey: key(.localeValue)) == locale)
+    }
     
     func testWrapperWithCGTypes() {
         eraseDefaults()

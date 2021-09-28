@@ -54,6 +54,30 @@ public extension UserDefaults {
         self.set(value.convertedObject(), forKey: defaultName)
     }
     
+    /// Sets the value of the specified default key to the specified `Decimal` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: Decimal, forKey defaultName: String) {
+        self.set(value.convertedObject(), forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `UUID` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value.
+    func set(_ value: UUID, forKey defaultName: String) {
+        self.set(value.uuidString, forKey: defaultName)
+    }
+    
+    /// Sets the value of the specified default key to the specified `Locale` value.
+    /// - Parameters:
+    ///   - value: The value to store in the defaults database.
+    ///   - defaultName: The key with which to associate the value
+    func set(_ value: Locale, forKey defaultName: String) {
+        self.set(value.convertedObject(), forKey: defaultName)
+    }
+    
     /// Returns any `RawReprensentable` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func rawReprensentable<T: RawRepresentable>(forKey defaultName: String) -> T? where T.RawValue: PropertyListSerializable {
@@ -70,6 +94,24 @@ public extension UserDefaults {
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func convertible<T: UserDefaultsConvertible>(forKey defaultName: String) -> T? {
         (self.object(forKey: defaultName) as? T.PropertyListSerializableType).flatMap { T.instanciate(from: $0) }
+    }
+    
+    /// Returns any `Decimal` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func decimal(forKey defaultName: String) -> Decimal {
+        self.decodable(forKey: defaultName) ?? .zero
+    }
+    
+    /// Returns any `UUID` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func uuid(forKey defaultName: String) -> UUID? {
+        self.string(forKey: defaultName).flatMap(UUID.init(uuidString: ))
+    }
+    
+    /// Returns any `Locale` value associated with the specified key.
+    /// - Parameter defaultName: A key in the current user‘s defaults database.
+    func locale(forKey defaultName: String) -> Locale? {
+        self.decodable(forKey: defaultName)
     }
     
     /// Adds the given value to the registration domain using the given key.
@@ -101,6 +143,30 @@ public extension UserDefaults {
     ///   - value: The object to register.
     ///   - defaultName: The object's key in the registration domain.
     func register<T: UserDefaultsConvertible>(_ value: T, forKey defaultName: String) {
+        self.register(value.convertedObject(), forKey: defaultName)
+    }
+    
+    /// Adds the given `Decimal` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: Decimal, defaultName: String) {
+        self.register(value.convertedObject(), forKey: defaultName)
+    }
+    
+    /// Adds the given `UUID` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: UUID, defaultName: String) {
+        self.register(value.uuidString, forKey: defaultName)
+    }
+    
+    /// Adds the given `Locale` value to the registration domain using the given key.
+    /// - Parameters:
+    ///   - value: The value to register.
+    ///   - defaultName: The object's key in the registration domain.
+    func register(_ value: Locale, defaultName: String) {
         self.register(value.convertedObject(), forKey: defaultName)
     }
 }

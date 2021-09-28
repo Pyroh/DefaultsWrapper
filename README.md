@@ -14,7 +14,7 @@ Why is it more interesting than any other property wrapper for `UserDefaults` ?
 1. It's type-safe
 1. It adds support for `enum`'s _out-of-the-box_*
 1. It provides support for `Encodable` types**
-1. It has propety wrappers that bring these marvelous features to SwiftUI 
+1. It has property wrappers that bring these marvelous features to SwiftUI 
 1. It can be used with the popular `CoreGraphics` value types 
 1. It can be used with optional and non-optional values
 1. It automatically registers the default value in the user defaults database
@@ -31,6 +31,8 @@ struct Game {
     @SavedState("StartingPosition") var startPos: CGPoint = .zero
 }
 ```
+
+**DefaultsWrapper** comes with support for all the popular data types \([see the list](#List-of-supported-types)\).
 
 As it is easy to make mistake using string literal keys **DefaultsWrapper** also introduces a `UserDefaultsKeyName` type to help you manage that.  It conforms to both  `RawRepresentable` and `ExpressibleByStringLiteral`. What could be considered as a best practice is to declare all keys at once inside a `UserDefaultsKeyName` extension :
 
@@ -60,6 +62,8 @@ _**The target type should conform to `UserDefaultsCodable` rather than `Codable`
 
 
 It features a conformance to `Codable` for `Published`. It means that your `ObservableObject` types can now conform to `UserDefaultsCodable` ! (Or just `Codable`). 
+
+It supports `Decimal`, `UUID` and `Locale` *out-of-the-box*.
 
 A brand new documentation thanks to Apple's DocC you can generate directly. It will be made available on another form later this year.
 
@@ -122,7 +126,7 @@ Then Swift arrived and we ended up with `UserDefaults` supporting  `Int`, `Doubl
 - `Data`
 - `Date`
 - `URL`
-- `Array` and `Dictonary` also comform to it provided that their respective `Element` and `Key`  follow the aforementioned rule. Dictionnary still accepts `Any` as `Value` type.
+- `Array` and `Dictonary` also conform to it provided that their respective `Element` and `Key`  follow the aforementioned rule. Dictionary still accepts `Any` as `Value` type.
 
 Obj-C types are not usable with `@Defaults`, [not for free at least](#Using-your-own-types).
 
@@ -160,7 +164,7 @@ You can still do something about these. We'll cover this later in [*Using your o
 `Codable` types are nice to use with `UserDefaults` since they can be transformed into a `Data` blob rather easily. Nonetheless **DefaultsWrapper** declares this `UserDefaultsCodable` protocol.  
 Why? Because most of our  `PropertyListSerializable` conforming types also conform to `Codable` thus using `Double` with `@Defaults` will cause the compiler to ask itself if it is more `Codable` or `PropertyListSerializable`. Of course it won't find the answer and will end up complaining about it. Nobody wants that.
 
-Long story short, `UserDefaultsCodable` is `Codable` without being `Codable`. If you want your `Codable` type also being accepted by `@Defaults` simply comform it to `UserDefaultsCodable` instead. 
+Long story short, `UserDefaultsCodable` is `Codable` without being `Codable`. If you want your `Codable` type also being accepted by `@Defaults` simply conform it to `UserDefaultsCodable` instead. 
 
 ### Default value registration
 `UserDefaults` offers a registration domain where values are associated to keys. Like in the user's defaults database but these values are transient and will never be written to the disk. When your application starts you register a bunch of properties at once —typically in your app delegate's `applicationDidFinishLaunching` method— and you're good to go.   
@@ -184,7 +188,7 @@ Every type usable with `@Defaults` can also be used while being optional. The wr
 - **If no default value is provided** or the default value is `nil`: 
     - the property **can return `nil`** 
     - it will return the actual value or `nil` if there's no registered value for this key 
-    - setting the property to `nil` will remove the value from the user's defaults detabase
+    - setting the property to `nil` will remove the value from the user's defaults database
 
 ### `CoreGraphics` types
 You cant use these `CoreGraphics` value types directly with `@Defaults` :
@@ -195,7 +199,7 @@ You cant use these `CoreGraphics` value types directly with `@Defaults` :
 - `CGVector`
 - `CGAffineTransform`
 
-For your convenience these types are not converted to a `Data` blob but to a human-readable `Dictionary`. Sometimes you may need to tweak the defaults by hand using the command line, it will remain possilble to modify the `width` property of the `size` property of `RectangularThing`. As `RectangularThing` is a `CGRect` and every CG type is encoded to a `Dictionary` which keys are the same that the corresponding type's property names.  
+For your convenience these types are not converted to a `Data` blob but to a human-readable `Dictionary`. Sometimes you may need to tweak the defaults by hand using the command line, it will remain possible to modify the `width` property of the `size` property of `RectangularThing`. As `RectangularThing` is a `CGRect` and every CG type is encoded to a `Dictionary` which keys are the same that the corresponding type's property names.  
 
 > **Please note that** :
 > - `CGFloat` is simply converted to a `Double` value.
@@ -205,7 +209,7 @@ For your convenience these types are not converted to a `Data` blob but to a hum
 You may need to put something else in the user's defaults database. For this there's something you can do depending of what the object's type actually is.
 
 #### The type is `NSString`, `NSNumber`, `NSArray`, or `NSDictionary`
-Simply declare `PropertyListSerializable` conformance for this type somewhere in your code, it's easy as writting `extension NSNumber: PropertyListSerializable { }` (replace `NSNumber` by the right type of course). Use it at your own risk.
+Simply declare `PropertyListSerializable` conformance for this type somewhere in your code, it's easy as writing `extension NSNumber: PropertyListSerializable { }` (replace `NSNumber` by the right type of course). Use it at your own risk.
 
 #### This is a common type that should deserve *out-of-the-box* support
 It's a 3 steps solution :
@@ -215,7 +219,7 @@ It's a 3 steps solution :
 
 If you don't know how to do it or don't have time or.... Just open an issue 😉
 
-> Opening an issue or making a pull request doesn't necesseraly mean support will be implemented or the PR accepted.
+> Opening an issue or making a pull request doesn't necessarily mean support will be implemented or the PR accepted.
 
 #### It's another thing you can't conform to `UserDefaultsCodable`
 You'll still need to conform your type to `UserDefaultsConvertible`. The API is quite simple : 
@@ -266,7 +270,7 @@ extension SIMD2: UserDefaultsConvertible where Scalar: PropertyListSerializable 
 
 ## `UserDefaults` extension
 An `UserDefault` extension is also publicly accessible in **DefaultsWrapper** and allows any `UserDefaults` instance to support as much types as `@Defaults`, `@Preference` or `@SavedState`.  
-You can store any supported value using the `set` method, to retrieve values here are the methods (names are self-explenatory) :
+You can store any supported value using the `set` method, to retrieve values here are the methods (names are self-explanatory) :
 
 ```Swift
 func rawReprensentable<T: RawRepresentable>(forKey UserDefaultsKeyName: String) -> T? where T.RawValue: PropertyListSerializable
@@ -282,6 +286,32 @@ func cgAffineTransform(forKey UserDefaultsKeyName: String) -> CGAffineTransform
 ```
 
 There is also a `register` method that allows to register only one object instead of a `Dictionary`, for every supported type.
+
+## List of supported types
+### Standard types
+- `Int`
+- `Double`
+- `Float`
+- `Bool` 
+- `String`
+- `Data`
+- `Date`
+- `URL`
+- `Array` if its required type `Element` is itself supported
+- `Dictonary` if its `Key` required type is `String` and its `Element` one is supported. 
+
+### Foundation
+- `Decimal`
+- `UUID`
+- `Locale`
+
+### Core Graphics
+- `CGFloat`
+- `CGPoint`
+- `CGSize`
+- `CGRect`
+- `CGVector`
+- `CGAffineTransform`
 
 ## License
 
