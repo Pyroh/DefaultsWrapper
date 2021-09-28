@@ -40,7 +40,7 @@ public protocol AnyOptional {
     var wrappedValue: Wrapped? { get }
     
     /// The receiver is nil.
-    var isNil: Bool { get }
+    var isNilValue: Bool { get }
     
     /// `nil` when you can't use `nil`.
     static var nilValue: Self { get }
@@ -51,7 +51,7 @@ public protocol AnyOptional {
 
 extension Optional: AnyOptional {
     public var wrappedValue: Wrapped? { self }
-    public var isNil: Bool { self == nil }
+    public var isNilValue: Bool { self == nil }
     public static var nilValue: Self { nil }
 
     public static func wrapValue(_ wrapping: Wrapped) -> Self {

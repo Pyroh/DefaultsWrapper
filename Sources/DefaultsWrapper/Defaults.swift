@@ -439,7 +439,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
             $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNil { defaults.removeObject(forKey: defaultName) }
+            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
@@ -524,7 +524,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
         let getter: GetterBlock = { (SerializableAdapter.deserialize(from: defaults, withKey: defaultName)).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
             $0.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName) }
-            if $0.isNil { defaults.removeObject(forKey: defaultName) }
+            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
@@ -552,7 +552,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
         let getter: GetterBlock = { defaults.decodable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
             $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNil { defaults.removeObject(forKey: defaultName) }
+            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
         
         self.init(getter: getter, setter: setter)

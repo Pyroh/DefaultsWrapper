@@ -181,7 +181,7 @@ final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: Any
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
         value.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: key) }
-        if value.isNil { defaults.removeObject(forKey: key) }
+        if value.isNilValue { defaults.removeObject(forKey: key) }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
@@ -198,7 +198,7 @@ final class UserDefaultsOptionalUserDefaultsCodableValueAdapter<Element: AnyOpti
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
         value.wrappedValue.map { defaults.set($0, forKey: key) }
-        if value.isNil { defaults.removeObject(forKey: key) }
+        if value.isNilValue { defaults.removeObject(forKey: key) }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
