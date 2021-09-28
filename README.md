@@ -231,13 +231,13 @@ func convertedObject() -> PropertyListSerializableType
 
 /// Converts the serialized object back.
 /// - Parameter object: The serialized object.
-static func instanciate(from object: PropertyListSerializableType) -> Self?
+static func instantiate(from object: PropertyListSerializableType) -> Self?
 ```
 
 Now it's a two step solution:
 
 1. Implement `convertedObject() -> PropertyListSerializableType`  to convert instances of your type to something conforming to  `PropertyListSerializable`
-1. Implement `instanciate(from object: PropertyListSerializableType) -> Self?` to convert something conforming to `PropertyListSerializable` in a new instance of your type, if possible.
+1. Implement `instantiate(from object: PropertyListSerializableType) -> Self?` to convert something conforming to `PropertyListSerializable` in a new instance of your type, if possible.
 
 As a exemple here is how to conform `SIMD2<Int>` to  `UserDefaultsConvertible` :
 ```Swift
@@ -246,7 +246,7 @@ extension SIMD2: UserDefaultsConvertible where Scalar == Int {
         ["x": self.x, "y": self.y]
     }
 
-    public static func instanciate(from object: [String : Int]) -> SIMD2<Int>? {
+    public static func instantiate(from object: [String : Int]) -> SIMD2<Int>? {
         guard let x = object["x"], let y = object["y"] else { return nil }
 
         return .init(x: x, y: y)
@@ -260,7 +260,7 @@ extension SIMD2: UserDefaultsConvertible where Scalar: PropertyListSerializable 
         ["x": self.x, "y": self.y]
     }
 
-    public static func instanciate(from object: [String : Scalar]) -> Self? {
+    public static func instantiate(from object: [String : Scalar]) -> Self? {
         guard let x = object["x"], let y = object["y"] else { return nil }
 
         return .init(x: x, y: y)

@@ -93,7 +93,7 @@ public extension UserDefaults {
     /// Returns any `UserDefaultsConvertible` value associated with the specified key.
     /// - Parameter defaultName: A key in the current user‘s defaults database.
     func convertible<T: UserDefaultsConvertible>(forKey defaultName: String) -> T? {
-        (self.object(forKey: defaultName) as? T.PropertyListSerializableType).flatMap { T.instanciate(from: $0) }
+        (self.object(forKey: defaultName) as? T.PropertyListSerializableType).flatMap { T.instantiate(from: $0) }
     }
     
     /// Returns any `Decimal` value associated with the specified key.

@@ -38,7 +38,7 @@ public protocol UserDefaultsConvertible {
     
     /// Converts the serialized object back.
     /// - Parameter object: The serialized object.
-    static func instanciate(from object: PropertyListSerializableType) -> Self?
+    static func instantiate(from object: PropertyListSerializableType) -> Self?
 }
 
 /// A type that converts itself to another type which natively fits in an user's defaults database.
@@ -59,7 +59,7 @@ extension _UserDefaultsConvertible {
         self.convert()
     }
     
-    public static func instanciate(from object: ConvertedType) -> Self? {
+    public static func instantiate(from object: ConvertedType) -> Self? {
         self.reverse(from: object)
     }
 }

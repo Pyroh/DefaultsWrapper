@@ -33,8 +33,8 @@ extension Array: UserDefaultsConvertible where Element: UserDefaultsConvertible 
         map { $0.convertedObject() }
     }
     
-    public static func instanciate(from object: PropertyListSerializableType) -> Array<Element>? {
+    public static func instantiate(from object: PropertyListSerializableType) -> Array<Element>? {
         guard let array = object as? [Element.PropertyListSerializableType] else { return nil }
-        return array.compactMap(Element.instanciate(from:))
+        return array.compactMap(Element.instantiate(from:))
     }
 }

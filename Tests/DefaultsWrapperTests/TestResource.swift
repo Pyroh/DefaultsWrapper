@@ -274,7 +274,7 @@ extension SIMD2: UserDefaultsConvertible where Scalar == Int {
         ["x": self.x, "y": self.y]
     }
     
-    public static func instanciate(from object: [String : Int]) -> SIMD2<Int>? {
+    public static func instantiate(from object: [String : Int]) -> SIMD2<Int>? {
         guard let x = object["x"], let y = object["y"] else { return nil }
         
         return .init(x: x, y: y)

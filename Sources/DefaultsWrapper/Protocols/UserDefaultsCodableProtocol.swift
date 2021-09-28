@@ -40,7 +40,7 @@ extension UserDefaultsCodable {
         JSONCoding.data(from: self)
     }
     
-    public static func instanciate(from object: Data) -> Self? {
+    public static func instantiate(from object: Data) -> Self? {
         JSONCoding.object(from: object)
     }
 }
