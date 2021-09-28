@@ -75,7 +75,7 @@ struct SerializableAdapter<Convertible: UserDefaultsConvertible>: DefaultsSerial
 }
 
 extension SerializableAdapter: DefaultsDeserializable {
-    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Convertible?  {
+    static func deserialize(from defaults: UserDefaults, withKey defaultName: String) -> Convertible? {
         (defaults.object(forKey: defaultName) as? Convertible.PropertyListSerializableType).flatMap(Convertible.instantiate(from: ))
     }
 }

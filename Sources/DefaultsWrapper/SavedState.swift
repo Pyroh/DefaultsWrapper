@@ -26,6 +26,7 @@
 //  SOFTWARE.
 //
 
+#if !os(Linux)
 import SwiftUI
 
 /// A property wrapper type that can read and write a value managed by SwiftUI and persisted to `UserDefaults`.
@@ -93,6 +94,21 @@ public extension SavedState where Element: UserDefaultsConvertible {
     }
 }
 
+public extension SavedState where Element: UserDefaultsCodable {
+    
+    /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsCodable`.
+    ///
+    /// - Parameters:
+    ///   - wrappedValue: The default value.
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        self.init(adapter: UserDefaultsUserDefaultsCodableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+    }
+}
+
+
 public extension SavedState where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
     
     /// Creates a dynamic `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
@@ -143,3 +159,21 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDef
         self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
+
+public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDefaultsCodable {
+    
+    /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsCodable`.
+    ///
+    /// - Note:
+    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    ///
+    /// - Parameters:
+    ///   - wrappedValue: The default value.
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        self.init(adapter: UserDefaultsOptionalUserDefaultsCodableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
+    }
+}
+#endif

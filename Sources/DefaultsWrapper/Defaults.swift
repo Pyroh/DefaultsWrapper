@@ -253,6 +253,29 @@ public extension Defaults where Element: UserDefaultsConvertible {
     }
 }
 
+public extension Defaults where Element: UserDefaultsCodable {
+    
+    /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsCodable`.
+    ///
+    /// - Parameters:
+    ///   - wrappedValue: The default value.
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        let defaultName = key.rawValue
+        
+        let getter: GetterBlock = { defaults.decodable(forKey: defaultName) ?? initialValue() }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName)  }
+        
+        self.init(getter: getter, setter: setter)
+        
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            defaults.register(initialValue(), forKey: defaultName)
+        }
+    }
+}
+
 // MARK: - Optional
 // MARK: PropertyListSerializable
 
@@ -260,8 +283,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -289,8 +311,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
 
     /// Creates a users's defaults wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -318,8 +339,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
 
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -350,8 +370,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -379,8 +398,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
 
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -408,8 +426,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
 
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -422,9 +439,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
             $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
-                defaults.removeObject(forKey: defaultName)
-            }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
@@ -440,8 +455,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -469,8 +483,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
 
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - key: The key with which to associate the wrapped value.
@@ -498,8 +511,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
 
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
-    /// - Note:
-    ///     If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
     ///
     /// - Parameters:
     ///   - wrappedValue: The default value.
@@ -512,15 +524,41 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
         let getter: GetterBlock = { (SerializableAdapter.deserialize(from: defaults, withKey: defaultName)).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
             $0.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName) }
-            if $0.wrappedValue == nil {
-                defaults.removeObject(forKey: defaultName)
-            }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
             initialValue().wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: defaultName) }
+        }
+    }
+}
+
+public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefaultsCodable {
+    
+    /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsCodable`.
+    ///
+    /// - Note: If the expression `defaultValue` returns `nil` setting the wrapped value to `nil` at some point will remove the entry from the `UserDefaults` instance's registration domain.
+    ///
+    /// - Parameters:
+    ///   - wrappedValue: The default value.
+    ///   - key: The key with which to associate the wrapped value.
+    ///   - defaults: The `UserDefaults` instance where to do it.
+    ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+        let defaultName = key.rawValue
+        
+        let getter: GetterBlock = { defaults.decodable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
+        let setter: SetterBlock = {
+            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
+        }
+        
+        self.init(getter: getter, setter: setter)
+        
+        if registerValue, !defaults.hasValue(forKey: defaultName) {
+            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }

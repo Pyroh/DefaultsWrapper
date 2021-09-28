@@ -39,6 +39,9 @@ public protocol AnyOptional {
     /// The concrete optional type of the instance.
     var wrappedValue: Wrapped? { get }
     
+    /// The receiver is nil.
+    var isNil: Bool { get }
+    
     /// `nil` when you can't use `nil`.
     static var nilValue: Self { get }
     
@@ -48,6 +51,7 @@ public protocol AnyOptional {
 
 extension Optional: AnyOptional {
     public var wrappedValue: Wrapped? { self }
+    public var isNil: Bool { self == nil }
     public static var nilValue: Self { nil }
 
     public static func wrapValue(_ wrapping: Wrapped) -> Self {

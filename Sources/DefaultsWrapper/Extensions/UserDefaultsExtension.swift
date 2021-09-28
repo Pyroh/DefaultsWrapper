@@ -59,7 +59,7 @@ public extension UserDefaults {
     ///   - value: The value to store in the defaults database.
     ///   - defaultName: The key with which to associate the value.
     func set(_ value: Decimal, forKey defaultName: String) {
-        self.set(value.convertedObject(), forKey: defaultName)
+        self.set(JSONCoding.data(from: value), forKey: defaultName)
     }
     
     /// Sets the value of the specified default key to the specified `UUID` value.
@@ -75,7 +75,7 @@ public extension UserDefaults {
     ///   - value: The value to store in the defaults database.
     ///   - defaultName: The key with which to associate the value
     func set(_ value: Locale, forKey defaultName: String) {
-        self.set(value.convertedObject(), forKey: defaultName)
+        self.set(JSONCoding.data(from: value), forKey: defaultName)
     }
     
     /// Returns any `RawReprensentable` value associated with the specified key.
@@ -151,7 +151,7 @@ public extension UserDefaults {
     ///   - value: The value to register.
     ///   - defaultName: The object's key in the registration domain.
     func register(_ value: Decimal, defaultName: String) {
-        self.register(value.convertedObject(), forKey: defaultName)
+        self.register(value, forKey: defaultName)
     }
     
     /// Adds the given `UUID` value to the registration domain using the given key.
@@ -167,7 +167,7 @@ public extension UserDefaults {
     ///   - value: The value to register.
     ///   - defaultName: The object's key in the registration domain.
     func register(_ value: Locale, defaultName: String) {
-        self.register(value.convertedObject(), forKey: defaultName)
+        self.register(value, forKey: defaultName)
     }
 }
 

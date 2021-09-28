@@ -28,21 +28,9 @@
 import Foundation
 
 
-/// A type that conforms to both `Codable` and ``UserDefaultsConvertible``.
-///
-/// A default implementation is provided for all ``UserDefaultsConvertible`` methods.
+/// A type that conforms to `Codable`.
 ///
 /// Make your `Codable` types conform to `UserDefaultsCodable` today and get `UserDefaults` serialization for free 🎁.
-public protocol UserDefaultsCodable: Codable, UserDefaultsConvertible { }
-
-extension UserDefaultsCodable {
-    public func convertedObject() -> Data {
-        JSONCoding.data(from: self)
-    }
-    
-    public static func instantiate(from object: Data) -> Self? {
-        JSONCoding.object(from: object)
-    }
-}
+public protocol UserDefaultsCodable: Codable { }
 
 protocol _UserDefaultsCodable: UserDefaultsCodable { }
