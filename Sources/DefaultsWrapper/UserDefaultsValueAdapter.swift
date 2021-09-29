@@ -106,11 +106,11 @@ final class UserDefaultsRawRepresentableValueAdapter<Element: RawRepresentable>:
 
 final class UserDefaultsUserDefaultsConvertibleValueAdapter<Element: UserDefaultsConvertible>: UserDefaultsValueAdapter<Element> {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        SerializableAdapter.deserialize(from: defaults, withKey: key)
+        defaults.convertible(forKey: key)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        SerializableAdapter(value).serialize(in: defaults, withKey: key)
+        defaults.set(value, forKey: key)
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
@@ -176,16 +176,16 @@ final class UserDefaultsOptionalRawRepresentableValueAdapter<Element: AnyOptiona
 
 final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: AnyOptional>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        SerializableAdapter.deserialize(from: defaults, withKey: key).map(Element.wrapValue)
+        defaults.convertible(forKey: key).map(Element.wrapValue)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: key) }
+        value.wrappedValue.map { defaults.set($0, forKey: key) }
         if value.isNilValue { defaults.removeObject(forKey: key) }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: key) }
+        defaultValue.wrappedValue.map { defaults.register($0, forKey: key) }
     }
 }
 

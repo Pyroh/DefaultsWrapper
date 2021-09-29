@@ -201,13 +201,13 @@ public extension Defaults where Element: UserDefaultsConvertible {
     init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
-        let getter: GetterBlock = { SerializableAdapter.deserialize(from: defaults, withKey: defaultName) ?? defaultValue() }
-        let setter: SetterBlock = { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName)}
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName) ?? defaultValue() }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName) }
         
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            SerializableAdapter(defaultValue()).register(in: defaults, withKey: defaultName)
+            defaults.register(defaultValue(), forKey: defaultName)
         }
     }
 
@@ -222,13 +222,13 @@ public extension Defaults where Element: UserDefaultsConvertible {
     init(_ key: UserDefaultsKeyName, value: @escaping @autoclosure () -> Element, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { SerializableAdapter.deserialize(from: defaults, withKey: defaultName) ?? value() }
-        let setter: SetterBlock = { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName)}
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName) ?? value() }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName) }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            SerializableAdapter(value()).register(in: defaults, withKey: defaultName)
+            defaults.register(value(), forKey: defaultName)
         }
     }
 
@@ -242,13 +242,13 @@ public extension Defaults where Element: UserDefaultsConvertible {
     init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { SerializableAdapter.deserialize(from: defaults, withKey: defaultName) ?? initialValue() }
-        let setter: SetterBlock = { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName)}
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName) ?? initialValue() }
+        let setter: SetterBlock = { defaults.set($0, forKey: defaultName) }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            SerializableAdapter(initialValue()).register(in: defaults, withKey: defaultName)
+            defaults.register(initialValue(), forKey: defaultName)
         }
     }
 }
@@ -466,18 +466,16 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = .nilValue, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
-        let getter: GetterBlock = { (SerializableAdapter.deserialize(from: defaults, withKey: defaultName)).map(Element.wrapValue) ?? defaultValue() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? defaultValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName) }
-            if $0.wrappedValue == nil {
-                defaults.removeObject(forKey: defaultName)
-            }
+            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
         
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            defaultValue().wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: defaultName) }
+            defaultValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -494,18 +492,16 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     init(_ key: UserDefaultsKeyName, value: @escaping @autoclosure () -> Element, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { (SerializableAdapter.deserialize(from: defaults, withKey: defaultName)).map(Element.wrapValue) ?? value() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? value() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName) }
-            if $0.wrappedValue == nil {
-                defaults.removeObject(forKey: defaultName)
-            }
+            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            value().wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: defaultName) }
+            value().wrappedValue.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -521,16 +517,16 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { (SerializableAdapter.deserialize(from: defaults, withKey: defaultName)).map(Element.wrapValue) ?? initialValue() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { SerializableAdapter($0).serialize(in: defaults, withKey: defaultName) }
+            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
             if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            initialValue().wrappedValue.map { SerializableAdapter($0).register(in: defaults, withKey: defaultName) }
+            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }

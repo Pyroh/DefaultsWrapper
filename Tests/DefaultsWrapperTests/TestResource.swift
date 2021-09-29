@@ -158,33 +158,63 @@ class TestCase {
     var optionalNilArrayValue: [Int]?
 }
 
-class WrappedTestCase {
-    @Defaults(.doubleValue)
+class PreferenceTestCase {
+    @Preference(.doubleValue)
     var doubleValue: Double = 42
-    @Defaults(.optionalDoubleValue)
+    @Preference(.optionalDoubleValue)
     var optionalDoubleValue: Double? = 42
-    @Defaults(.optionalNilDoubleValue)
+    @Preference(.optionalNilDoubleValue)
     var optionalNilDoubleValue: Double?
-
-    @Defaults(.enumValue )
+    
+    @Preference(.enumValue)
     var enumValue: Direction = .north
-    @Defaults(.optionalEnumValue)
+    @Preference(.optionalEnumValue)
     var optionalEnumValue: Direction? = .north
-    @Defaults(.optionalNilEnumValue)
+    @Preference(.optionalNilEnumValue)
     var optionalNilEnumValue: Direction?
-
-    @Defaults(.codableValue)
+    
+    @Preference(.codableValue)
     var codableValue: CodableStruct = CodableStruct()
-    @Defaults(.optionalcodableValue)
+    @Preference(.optionalcodableValue)
     var optionalcodableValue: CodableStruct? = CodableStruct()
-    @Defaults(.optionalNilcodableValue)
+    @Preference(.optionalNilcodableValue)
     var optionalNilcodableValue: CodableStruct?
+    
+    @Preference(.arrayValue)
+    var arrayValue: [Int] = [1, 2, 3]
+    @Preference(.optionalArrayValue)
+    var optionalArrayValue: [Int]? = [1, 2, 3]
+    @Preference(.optionalNilArrayValue)
+    var optionalNilArrayValue: [Int]?
+}
 
-    @Defaults(.arrayValue)
-    var arrayValue: [Int] =  [1, 2, 3]
-    @Defaults(.optionalArrayValue)
-    var optionalArrayValue: [Int]? =  [1, 2, 3]
-    @Defaults(.optionalNilArrayValue)
+class SavedStateTestCase {
+    @SavedState(.doubleValue)
+    var doubleValue: Double = 42
+    @SavedState(.optionalDoubleValue)
+    var optionalDoubleValue: Double? = 42
+    @SavedState(.optionalNilDoubleValue)
+    var optionalNilDoubleValue: Double?
+    
+    @SavedState(.enumValue)
+    var enumValue: Direction = .north
+    @SavedState(.optionalEnumValue)
+    var optionalEnumValue: Direction? = .north
+    @SavedState(.optionalNilEnumValue)
+    var optionalNilEnumValue: Direction?
+    
+    @SavedState(.codableValue)
+    var codableValue: CodableStruct = CodableStruct()
+    @SavedState(.optionalcodableValue)
+    var optionalcodableValue: CodableStruct? = CodableStruct()
+    @SavedState(.optionalNilcodableValue)
+    var optionalNilcodableValue: CodableStruct?
+    
+    @SavedState(.arrayValue)
+    var arrayValue: [Int] = [1, 2, 3]
+    @SavedState(.optionalArrayValue)
+    var optionalArrayValue: [Int]? = [1, 2, 3]
+    @SavedState(.optionalNilArrayValue)
     var optionalNilArrayValue: [Int]?
 }
 
@@ -232,6 +262,94 @@ class CGTestCase {
     var optionalNilTransformValue:  CGAffineTransform?
 }
 
+class CGPreferenceTestCase {
+    @Preference(.floatValue)
+    var floatValue: CGFloat = .zero
+    @Preference(.optionalFloatValue)
+    var optionalFloatValue: CGFloat? = .zero
+    @Preference(.optionalNilFloatValue)
+    var optionalNilFloatValue: CGFloat?
+    
+    @Preference(.pointValue)
+    var pointValue: CGPoint = .zero
+    @Preference(.optionalPointValue)
+    var optionalPointValue: CGPoint? = .zero
+    @Preference(.optionalNilPointValue)
+    var optionalNilPointValue: CGPoint?
+    
+    @Preference(.sizeValue)
+    var sizeValue: CGSize = .zero
+    @Preference(.optionalSizeValue)
+    var optionalSizeValue: CGSize? = .zero
+    @Preference(.optionalNilSizeValue)
+    var optionalNilSizeValue: CGSize?
+    
+    @Preference(.rectValue)
+    var rectValue: CGRect = .zero
+    @Preference(.optionalRectValue)
+    var optionalRectValue: CGRect? = .zero
+    @Preference(.optionalNilRectValue)
+    var optionalNilRectValue: CGRect?
+    
+    @Preference(.vectorValue)
+    var vectorValue: CGVector = .zero
+    @Preference(.optionalVectorValue)
+    var optionalVectorValue: CGVector? = .zero
+    @Preference(.optionalNilVectorValue)
+    var optionalNilVectorValue: CGVector?
+    
+    @Preference(.transformValue)
+    var transformValue: CGAffineTransform = .identity
+    @Preference(.optionalTransformValue)
+    var optionalTransformValue: CGAffineTransform? = .identity
+    @Preference(.optionalNilTransformValue)
+    var optionalNilTransformValue:  CGAffineTransform?
+}
+
+class CGSavedStateTestCase {
+    @SavedState(.floatValue)
+    var floatValue: CGFloat = .zero
+    @SavedState(.optionalFloatValue)
+    var optionalFloatValue: CGFloat? = .zero
+    @SavedState(.optionalNilFloatValue)
+    var optionalNilFloatValue: CGFloat?
+    
+    @SavedState(.pointValue)
+    var pointValue: CGPoint = .zero
+    @SavedState(.optionalPointValue)
+    var optionalPointValue: CGPoint? = .zero
+    @SavedState(.optionalNilPointValue)
+    var optionalNilPointValue: CGPoint?
+    
+    @SavedState(.sizeValue)
+    var sizeValue: CGSize = .zero
+    @SavedState(.optionalSizeValue)
+    var optionalSizeValue: CGSize? = .zero
+    @SavedState(.optionalNilSizeValue)
+    var optionalNilSizeValue: CGSize?
+    
+    @SavedState(.rectValue)
+    var rectValue: CGRect = .zero
+    @SavedState(.optionalRectValue)
+    var optionalRectValue: CGRect? = .zero
+    @SavedState(.optionalNilRectValue)
+    var optionalNilRectValue: CGRect?
+    
+    @SavedState(.vectorValue)
+    var vectorValue: CGVector = .zero
+    @SavedState(.optionalVectorValue)
+    var optionalVectorValue: CGVector? = .zero
+    @SavedState(.optionalNilVectorValue)
+    var optionalNilVectorValue: CGVector?
+    
+    @SavedState(.transformValue)
+    var transformValue: CGAffineTransform = .identity
+    @SavedState(.optionalTransformValue)
+    var optionalTransformValue: CGAffineTransform? = .identity
+    @SavedState(.optionalNilTransformValue)
+    var optionalNilTransformValue:  CGAffineTransform?
+}
+
 class FoundationTestCase {
     @Defaults(.decimalValue)
     var decimalValue: Decimal = .zero
@@ -240,6 +358,28 @@ class FoundationTestCase {
     var uuidValue: UUID = .init(uuidString: "00000000-0000-0000-0000-000000000000")!
     
     @Defaults(.localeValue)
+    var localValue: Locale = .current
+}
+
+class FoundationPreferenceTestCase {
+    @Preference(.decimalValue)
+    var decimalValue: Decimal = .zero
+    
+    @Preference(.uuidValue)
+    var uuidValue: UUID = .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    
+    @Preference(.localeValue)
+    var localValue: Locale = .current
+}
+
+class FoundationSavedStateTestCase {
+    @SavedState(.decimalValue)
+    var decimalValue: Decimal = .zero
+    
+    @SavedState(.uuidValue)
+    var uuidValue: UUID = .init(uuidString: "00000000-0000-0000-0000-000000000000")!
+    
+    @SavedState(.localeValue)
     var localValue: Locale = .current
 }
 

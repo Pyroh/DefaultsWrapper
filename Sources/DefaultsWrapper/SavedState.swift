@@ -138,7 +138,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: RawRepr
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalRawRepresentableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
@@ -155,7 +155,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDef
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalUserDefaultsConvertibleValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
@@ -172,7 +172,7 @@ public extension SavedState where Element: AnyOptional, Element.Wrapped: UserDef
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @autoclosure @escaping () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @autoclosure @escaping () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         self.init(adapter: UserDefaultsOptionalUserDefaultsCodableValueAdapter(key: key.rawValue, defaultValue: initialValue, defaults: defaults, register: registerValue, observeChanges: false))
     }
 }
