@@ -29,6 +29,7 @@
 #if !os(Linux)
 import Foundation
 import Combine
+import OptionalType
 
 class UserDefaultsValueAdapter<Element>: NSObject, ObservableObject {
     @Published var value: Element 
@@ -136,73 +137,73 @@ final class UserDefaultsUserDefaultsCodableValueAdapter<Element: UserDefaultsCod
 
 // MARK: - Optionals
 
-final class UserDefaultsOptionalValueAdapter<Element: AnyOptional>: UserDefaultsValueAdapter<Element> {
+final class UserDefaultsOptionalValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
         defaults.object(forKey: key) as? Element
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrappedValue.map { defaults.set($0, forKey: key) }
-        if value.wrappedValue == nil {
+        value.wrapped.map { defaults.set($0, forKey: key) }
+        if value.wrapped.isNil {
             defaults.removeObject(forKey: key)
         }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrappedValue.map { defaults.register($0, forKey: key) }
+        defaultValue.wrapped.map { defaults.register($0, forKey: key) }
     }
 }
 
 // MARK: RawRepresentable
 
-final class UserDefaultsOptionalRawRepresentableValueAdapter<Element: AnyOptional>: UserDefaultsValueAdapter<Element> where Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+final class UserDefaultsOptionalRawRepresentableValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        defaults.rawReprensentable(forKey: key).map(Element.wrapValue)
+        defaults.rawReprensentable(forKey: key).map(Element.wrap)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrappedValue.map { defaults.set($0, forKey: key) }
-        if value.wrappedValue == nil {
+        value.wrapped.map { defaults.set($0, forKey: key) }
+        if value.wrapped.isNil {
             defaults.removeObject(forKey: key)
         }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrappedValue.map { defaults.register($0, forKey: key) }
+        defaultValue.wrapped.map { defaults.register($0, forKey: key) }
     }
 }
 
 // MARK: UserDefaultsConvertible
 
-final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: AnyOptional>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
+final class UserDefaultsOptionalUserDefaultsConvertibleValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsConvertible {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        defaults.convertible(forKey: key).map(Element.wrapValue)
+        defaults.convertible(forKey: key).map(Element.wrap)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrappedValue.map { defaults.set($0, forKey: key) }
-        if value.isNilValue { defaults.removeObject(forKey: key) }
+        value.wrapped.map { defaults.set($0, forKey: key) }
+        if value.isNil { defaults.removeObject(forKey: key) }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrappedValue.map { defaults.register($0, forKey: key) }
+        defaultValue.wrapped.map { defaults.register($0, forKey: key) }
     }
 }
 
 // MARK: UserDefaultsCodable
 
-final class UserDefaultsOptionalUserDefaultsCodableValueAdapter<Element: AnyOptional>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsCodable {
+final class UserDefaultsOptionalUserDefaultsCodableValueAdapter<Element: OptionalType>: UserDefaultsValueAdapter<Element> where Element.Wrapped: UserDefaultsCodable {
     override class func readValue(forKey key: String, from defaults: UserDefaults) -> Element? {
-        defaults.decodable(forKey: key).map(Element.wrapValue)
+        defaults.decodable(forKey: key).map(Element.wrap)
     }
     
     override class func writeValue(_ value: Element, forKey key: String, to defaults: UserDefaults) {
-        value.wrappedValue.map { defaults.set($0, forKey: key) }
-        if value.isNilValue { defaults.removeObject(forKey: key) }
+        value.wrapped.map { defaults.set($0, forKey: key) }
+        if value.isNil { defaults.removeObject(forKey: key) }
     }
     
     override class func registerDefaultValue(_ defaultValue: Element, forKey key: String, in defaults: UserDefaults) {
-        defaultValue.wrappedValue.map { defaults.register($0, forKey: key) }
+        defaultValue.wrapped.map { defaults.register($0, forKey: key) }
     }
 }
 #endif

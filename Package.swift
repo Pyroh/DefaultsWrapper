@@ -16,11 +16,13 @@ let package = Package(
             name: "DefaultsWrapper",
             targets: ["DefaultsWrapper"]),
     ],
-    dependencies: [],
+    dependencies: [
+        .package(name: "OptionalType", url: "https://github.com/Pyroh/OptionalType.git", from: "1.0.0")
+    ],
     targets: [
         .target(
             name: "DefaultsWrapper",
-            dependencies: []),
+            dependencies: ["OptionalType"]),
         .testTarget(
             name: "DefaultsWrapperTests",
             dependencies: ["DefaultsWrapper"]),

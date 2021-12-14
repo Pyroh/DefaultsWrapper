@@ -26,6 +26,7 @@
 
 
 import Foundation
+import OptionalType
 
 /// Keeps compatibility with previous versions.
 @available(*, deprecated, renamed: "Defaults")
@@ -279,7 +280,7 @@ public extension Defaults where Element: UserDefaultsCodable {
 // MARK: - Optional
 // MARK: PropertyListSerializable
 
-public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyListSerializable {
+public extension Defaults where Element: OptionalType, Element.Wrapped: PropertyListSerializable {
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `PropertyListSerializable`.
     ///
@@ -291,13 +292,13 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     @available(*, deprecated)
-    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = .nilValue, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? defaultValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
             }
         }
@@ -305,7 +306,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            defaultValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            defaultValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -324,8 +325,8 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
 
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? value() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
             }
         }
@@ -333,7 +334,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            value().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            value().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -346,13 +347,13 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
             }
         }
@@ -360,13 +361,13 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: PropertyL
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            initialValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }
 // MARK: RawRepresentable
 
-public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
+public extension Defaults where Element: OptionalType, Element.Wrapped: RawRepresentable, Element.Wrapped.RawValue: PropertyListSerializable {
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `RawRepresentable` and its corresponding `RawValue` conforms to `PropertyListSerializable`.
     ///
@@ -378,13 +379,13 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     @available(*, deprecated)
-    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = .nilValue, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
-        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrapValue) ?? defaultValue() }
+        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? defaultValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
             }
         }
@@ -392,7 +393,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            defaultValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            defaultValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -409,10 +410,10 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
     init(_ key: UserDefaultsKeyName, value: @escaping @autoclosure () -> Element, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrapValue) ?? value() }
+        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? value() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.wrappedValue == nil {
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.wrapped == nil {
                 defaults.removeObject(forKey: defaultName)
             }
         }
@@ -420,7 +421,7 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            value().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            value().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -433,25 +434,25 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: RawRepres
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
+        let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? initialValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            initialValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }
 
 // MARK: UserDefaultsConvertible
-public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefaultsConvertible {
+public extension Defaults where Element: OptionalType, Element.Wrapped: UserDefaultsConvertible {
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type is an optional and conforms to `UserDefaultsConvertible`.
     ///
@@ -463,19 +464,19 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
     @available(*, deprecated)
-    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = .nilValue, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(key: UserDefaultsKeyName, defaultValue: @escaping @autoclosure () -> Element = nil, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
-        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? defaultValue() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrap) ?? defaultValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
         
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            defaultValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            defaultValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -492,16 +493,16 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     init(_ key: UserDefaultsKeyName, value: @escaping @autoclosure () -> Element, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? value() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrap) ?? value() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            value().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            value().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 
@@ -514,24 +515,24 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
 
-        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
+        let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrap) ?? initialValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
 
         self.init(getter: getter, setter: setter)
 
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            initialValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }
 
-public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefaultsCodable {
+public extension Defaults where Element: OptionalType, Element.Wrapped: UserDefaultsCodable {
     
     /// Creates a `UserDefaults` wrapper associated with the given key which wrapped type conforms to `UserDefaultsCodable`.
     ///
@@ -542,19 +543,19 @@ public extension Defaults where Element: AnyOptional, Element.Wrapped: UserDefau
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = .nilValue, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
-        let getter: GetterBlock = { defaults.decodable(forKey: defaultName).map(Element.wrapValue) ?? initialValue() }
+        let getter: GetterBlock = { defaults.decodable(forKey: defaultName).map(Element.wrap) ?? initialValue() }
         let setter: SetterBlock = {
-            $0.wrappedValue.map { defaults.set($0, forKey: defaultName) }
-            if $0.isNilValue { defaults.removeObject(forKey: defaultName) }
+            $0.wrapped.map { defaults.set($0, forKey: defaultName) }
+            if $0.isNil { defaults.removeObject(forKey: defaultName) }
         }
         
         self.init(getter: getter, setter: setter)
         
         if registerValue, !defaults.hasValue(forKey: defaultName) {
-            initialValue().wrappedValue.map { defaults.register($0, forKey: defaultName) }
+            initialValue().wrapped.map { defaults.register($0, forKey: defaultName) }
         }
     }
 }

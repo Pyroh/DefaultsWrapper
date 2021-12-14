@@ -67,11 +67,11 @@ final class DefaultsWrapperTests: XCTestCase {
         c.optionalEnumValue = nil
         XCTAssert(d.rawReprensentable(forKey: key(.optionalEnumValue)) == Direction.north)
         
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         c.optionalNilEnumValue = .east
         XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Direction.east)
         c.optionalNilEnumValue = nil
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         
         let csRef = CodableStruct()
         var cs1 = csRef
@@ -91,11 +91,11 @@ final class DefaultsWrapperTests: XCTestCase {
         var cs3 = cs2
         cs3.scaledValues = []
         
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         c.optionalNilcodableValue = cs3
         XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == cs3)
         c.optionalNilcodableValue = nil
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         
         c.arrayValue = [4, 5, 6]
         XCTAssert(d.array(forKey: key(.arrayValue)) as? [Int] == [4, 5, 6])
@@ -140,11 +140,11 @@ final class DefaultsWrapperTests: XCTestCase {
         c.optionalEnumValue = nil
         XCTAssert(d.rawReprensentable(forKey: key(.optionalEnumValue)) == Direction.north)
         
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         c.optionalNilEnumValue = .east
         XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Direction.east)
         c.optionalNilEnumValue = nil
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         
         let csRef = CodableStruct()
         var cs1 = csRef
@@ -164,11 +164,11 @@ final class DefaultsWrapperTests: XCTestCase {
         var cs3 = cs2
         cs3.scaledValues = []
         
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         c.optionalNilcodableValue = cs3
         XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == cs3)
         c.optionalNilcodableValue = nil
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         
         c.arrayValue = [4, 5, 6]
         XCTAssert(d.array(forKey: key(.arrayValue)) as? [Int] == [4, 5, 6])
@@ -213,11 +213,11 @@ final class DefaultsWrapperTests: XCTestCase {
         c.optionalEnumValue = nil
         XCTAssert(d.rawReprensentable(forKey: key(.optionalEnumValue)) == Direction.north)
         
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         c.optionalNilEnumValue = .east
         XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Direction.east)
         c.optionalNilEnumValue = nil
-        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.nilValue)
+        XCTAssert(d.rawReprensentable(forKey: key(.optionalNilEnumValue)) == Optional<Direction>.none)
         
         let csRef = CodableStruct()
         var cs1 = csRef
@@ -237,11 +237,11 @@ final class DefaultsWrapperTests: XCTestCase {
         var cs3 = cs2
         cs3.scaledValues = []
         
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         c.optionalNilcodableValue = cs3
         XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == cs3)
         c.optionalNilcodableValue = nil
-        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.nilValue)
+        XCTAssert(d.decodable(forKey: key(.optionalNilcodableValue)) == Optional<CodableStruct>.none)
         
         c.arrayValue = [4, 5, 6]
         XCTAssert(d.array(forKey: key(.arrayValue)) as? [Int] == [4, 5, 6])
