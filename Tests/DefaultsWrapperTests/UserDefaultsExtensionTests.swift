@@ -48,6 +48,10 @@ final class UserDefaultsExtensionTests: XCTestCase {
         XCTAssert(d.cgAffineTransform(forKey: "not a key") == .identity)
     }
     
+    func testUnitPoint() {
+        let d = UserDefaults.standard
+    }
+    
     static var allTests = [
         ("testCGTypes", testCGTypes),
     ]

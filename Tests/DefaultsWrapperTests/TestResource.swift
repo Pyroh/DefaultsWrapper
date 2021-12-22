@@ -77,6 +77,8 @@ extension UserDefaultsKeyName {
     static let uuidValue: UserDefaultsKeyName = "uuidValue"
     static let localeValue: UserDefaultsKeyName = "localeValue"
     
+    static let codableArray: UserDefaultsKeyName = "codableArray"
+    
     static var all: [UserDefaultsKeyName] { [
         .doubleValue,
         .optionalDoubleValue,
@@ -120,12 +122,12 @@ extension UserDefaultsKeyName {
         
         .cgFloatArray,
         .cgPointArray,
+        .codableArray,
         
         .decimalValue,
         .uuidValue,
-        .localeValue
-        ]
-    }
+        .localeValue,
+    ] }
 }
 
 class TestCase {
@@ -386,6 +388,7 @@ class FoundationSavedStateTestCase {
 class ArrayTestCase {
     @Defaults(.cgFloatArray) var cgFloatArray: [CGFloat] = []
     @Defaults(.cgPointArray) var cgPointArray: [CGPoint] = []
+    @Defaults(.codableArray) var codableArray: [Person] = []
 }
 
 enum Direction: Int, Codable {

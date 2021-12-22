@@ -28,6 +28,8 @@
 
 import Foundation
 
+extension Array: UserDefaultsCodable where Element: UserDefaultsCodable { }
+
 extension Array: UserDefaultsConvertible where Element: UserDefaultsConvertible {
     public func convertedObject() -> some PropertyListSerializable {
         map { $0.convertedObject() }

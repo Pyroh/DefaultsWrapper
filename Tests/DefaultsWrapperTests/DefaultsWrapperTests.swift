@@ -17,7 +17,7 @@ class C {
     var otherValue: String = "Hello world !"
 }
 
-final class Person: UserDefaultsCodable {
+struct Person: UserDefaultsCodable, Equatable {
     let firstName: String
     let lastName: String
 }
@@ -37,6 +37,12 @@ final class DefaultsWrapperTests: XCTestCase {
         // Complex Value
         arr.cgPointArray = [CGPoint(x: 1, y: 2), CGPoint(x: 3, y: 4)]
         XCTAssert(d.array(forKey: key(.cgPointArray)) as? [[String: Double]] == [["x": 1.0, "y": 2.0], ["x": 3.0, "y": 4.0]])
+        
+        arr.codableArray = [.init(firstName: "John", lastName: "Doe")]
+        let retrievedCodableArray = d.data(forKey: key(.codableArray))
+            .map { try? JSONDecoder().decode([Person].self, from: $0) }
+
+        XCTAssert(retrievedCodableArray == [.init(firstName: "John", lastName: "Doe")])
     }
     
     func testWrapper() {
