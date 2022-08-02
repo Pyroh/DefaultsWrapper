@@ -20,3 +20,7 @@ DefaultsWrapper is a collection of property wrappers for `UserDefaults`.
 - ``Defaults``
 - ``Preference``
 - ``SavedState``
+
+### Structs
+
+- ``DefaultsValue``

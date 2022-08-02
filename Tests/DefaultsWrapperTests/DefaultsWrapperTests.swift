@@ -653,7 +653,32 @@ final class DefaultsWrapperTests: XCTestCase {
         cg.optionalNilTransformValue = nil
         XCTAssert(d.array(forKey: key(.optionalNilTransformValue)) == nil)
     }
-
+    
+    func testDefaultsValue() {
+        eraseDefaults()
+        
+        let exp = expectation(description: "onChangeDoubleValue")
+        exp.expectedFulfillmentCount = 2
+        
+        let doubleValue = DefaultsValue(key: .doubleValue, initialValue: Double(42)) { value in
+            exp.fulfill()
+        }
+        
+        let doubleValueCopy = doubleValue
+        
+        doubleValue.value = 21
+        
+        XCTAssert(doubleValue == 21)
+        XCTAssert(doubleValue < 42)
+        
+        doubleValueCopy.value = 42
+        
+        XCTAssert(21 < doubleValue)
+        XCTAssert(42 == doubleValue)
+        
+        waitForExpectations(timeout: 1)
+    }
+    
     static var allTests = [
         ("testWrapper", testWrapper),
         ("testWrapperWithCGTypes", testWrapperWithCGTypes),
