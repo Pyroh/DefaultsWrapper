@@ -29,14 +29,48 @@
 import Foundation
 import Combine
 
+enum ObservationNeeds {
+    case none, projected, objectPublisher, both
+    
+    var hasNeeds: Bool { self != .none }
+    
+    mutating func addProjectedNeed() {
+        switch self {
+        case .none: self = .projected
+        case .objectPublisher: self = .both
+        case .projected, .both: break
+        }
+    }
+    
+    mutating func addObjectPublisherNeed() {
+        switch self {
+        case .none: self = .objectPublisher
+        case .projected: self = .both
+        case .objectPublisher, .both: break
+        }
+    }
+    
+    mutating func removeObjectPublisherNeed() {
+        switch self {
+        case .objectPublisher: self = .none
+        case .both: self = .projected
+        case .projected, .none: break
+        }
+    }
+}
+
 class ObserverAdaptor<Element>: NSObject {
     let key: String
     let getter: () -> Element
     let defaults: UserDefaults
+    var observationNeeds: ObservationNeeds = .none
     
     lazy var publisher: PassthroughSubject<Element, Never> = {
-        defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
+        if observationNeeds.hasNeeds {
+            defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
+        }
         
+        observationNeeds.addProjectedNeed()
         return PassthroughSubject()
     }()
     
@@ -44,6 +78,12 @@ class ObserverAdaptor<Element>: NSObject {
         self.key = key
         self.getter = getter
         self.defaults = defaults
+    }
+    
+    deinit {
+        if observationNeeds.hasNeeds {
+            defaults.removeObserver(self, forKeyPath: key)
+        }
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -54,7 +94,6 @@ class ObserverAdaptor<Element>: NSObject {
 }
 
 class ObserverRelayAdaptor<Element>: ObserverAdaptor<Element> {
-    private var isObserving = false
     private var blockNextObservedValue = false
     private weak var observableObjectPublisher: ObservableObjectPublisher?
     
@@ -62,17 +101,20 @@ class ObserverRelayAdaptor<Element>: ObserverAdaptor<Element> {
         guard oop !== observableObjectPublisher else { return }
         
         observableObjectPublisher = oop
-        if !isObserving {
+        
+        if !observationNeeds.hasNeeds {
             defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
-            isObserving.toggle()
         }
+        
+        observationNeeds.addObjectPublisherNeed()
     }
     
     func clearObservedObjectPublisher() {
         observableObjectPublisher = nil
-        if isObserving {
+        observationNeeds.removeObjectPublisherNeed()
+        
+        if !observationNeeds.hasNeeds {
             defaults.removeObserver(self, forKeyPath: key)
-            isObserving.toggle()
         }
     }
     
@@ -91,6 +133,7 @@ class ObserverRelayAdaptor<Element>: ObserverAdaptor<Element> {
             blockNextObservedValue.toggle()
             return
         }
+        
         observableObjectPublisher?.send()
     }
 }
