@@ -33,6 +33,12 @@ enum ObservationNeeds {
     case none, projected, objectPublisher, both
     
     var hasNeeds: Bool { self != .none }
+    var hasProjectedNeed: Bool {
+        switch self {
+        case .none, .objectPublisher: return false
+        case .projected, .both: return true
+        }
+    }
     
     mutating func addProjectedNeed() {
         switch self {
@@ -59,14 +65,49 @@ enum ObservationNeeds {
     }
 }
 
-class ObserverAdaptor<Element>: NSObject {
+final class ObserverAdaptor<Element>: NSObject {
+    let key: String
+    let getter: () -> Element
+    let defaults: UserDefaults
+    var isObserving = false
+    
+    lazy var publisher: PassthroughSubject<Element, Never> = {
+        defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
+        
+        isObserving = true
+        return PassthroughSubject()
+    }()
+    
+    init(_ key: String, getter: @escaping () -> Element, defaults: UserDefaults) {
+        self.key = key
+        self.getter = getter
+        self.defaults = defaults
+    }
+    
+    deinit {
+        if isObserving {
+            defaults.removeObserver(self, forKeyPath: key)
+        }
+    }
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        guard keyPath == key else { return }
+        
+        publisher.send(getter())
+    }
+}
+
+final class ObserverRelayAdaptor<Element>: NSObject {
     let key: String
     let getter: () -> Element
     let defaults: UserDefaults
     var observationNeeds: ObservationNeeds = .none
     
+    private var blockNextObservedValue = false
+    private weak var observableObjectPublisher: ObservableObjectPublisher?
+    
     lazy var publisher: PassthroughSubject<Element, Never> = {
-        if observationNeeds.hasNeeds {
+        if !observationNeeds.hasNeeds {
             defaults.addObserver(self, forKeyPath: key, options: [], context: nil)
         }
         
@@ -85,17 +126,6 @@ class ObserverAdaptor<Element>: NSObject {
             defaults.removeObserver(self, forKeyPath: key)
         }
     }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard keyPath == key else { return }
-        
-        publisher.send(getter())
-    }
-}
-
-class ObserverRelayAdaptor<Element>: ObserverAdaptor<Element> {
-    private var blockNextObservedValue = false
-    private weak var observableObjectPublisher: ObservableObjectPublisher?
     
     func updateObservedObjectPublisherIfNeeded(_ oop: ObservableObjectPublisher) {
         guard oop !== observableObjectPublisher else { return }
@@ -126,9 +156,12 @@ class ObserverRelayAdaptor<Element>: ObserverAdaptor<Element> {
     }
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-
         guard keyPath == key else { return }
+        
+        if observationNeeds.hasProjectedNeed {
+            publisher.send(getter())
+        }
+        
         guard !blockNextObservedValue else {
             blockNextObservedValue.toggle()
             return
