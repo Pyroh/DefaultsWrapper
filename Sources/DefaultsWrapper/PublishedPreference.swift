@@ -31,7 +31,7 @@ import Foundation
 import OptionalType
 import Combine
 
-@propertyWrapper public struct PublishedPreference<Element> {
+@propertyWrapper final public class PublishedPreference<Element> {
     private typealias GetterBlock = () -> Element
     private typealias SetterBlock = (Element) -> ()
     
@@ -59,7 +59,7 @@ import Combine
     public static subscript<Instance: ObservableObject>(
         _enclosingInstance instance: Instance,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<Instance, Element>,
-        storage storageKeyPath: ReferenceWritableKeyPath<Instance, Self>
+        storage storageKeyPath: ReferenceWritableKeyPath<Instance, PublishedPreference>
     ) -> Element {
         get {
             let wrapper = instance[keyPath: storageKeyPath]
@@ -84,7 +84,7 @@ public extension PublishedPreference where Element: PropertyListSerializable {
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue() }
@@ -110,7 +110,7 @@ public extension PublishedPreference where Element: RawRepresentable, Element.Ra
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName) ?? initialValue() }
@@ -136,7 +136,7 @@ public extension PublishedPreference where Element: UserDefaultsConvertible {
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.convertible(forKey: defaultName) ?? initialValue() }
@@ -160,7 +160,7 @@ public extension PublishedPreference where Element: UserDefaultsCodable {
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.decodable(forKey: defaultName) ?? initialValue() }
@@ -189,7 +189,7 @@ public extension PublishedPreference where Element: OptionalType, Element.Wrappe
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.object(forKey: defaultName) as? Element ?? initialValue() }
@@ -221,7 +221,7 @@ public extension PublishedPreference where Element: OptionalType, Element.Wrappe
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.rawReprensentable(forKey: defaultName).map(Element.wrap) ?? initialValue() }
@@ -251,7 +251,7 @@ public extension PublishedPreference where Element: OptionalType, Element.Wrappe
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain. Ignored if `defaultValue` return `nil`.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.convertible(forKey: defaultName).map(Element.wrap) ?? initialValue() }
@@ -280,7 +280,7 @@ public extension PublishedPreference where Element: OptionalType, Element.Wrappe
     ///   - key: The key with which to associate the wrapped value.
     ///   - defaults: The `UserDefaults` instance where to do it.
     ///   - registerValue: A boolean value that indicates if the default value should be added to de registration domain.
-    init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
+    convenience init(wrappedValue initialValue: @escaping @autoclosure () -> Element = nil, _ key: UserDefaultsKeyName, defaults: UserDefaults = .standard, registerValue: Bool = true) {
         let defaultName = key.rawValue
         
         let getter: GetterBlock = { defaults.decodable(forKey: defaultName).map(Element.wrap) ?? initialValue() }
